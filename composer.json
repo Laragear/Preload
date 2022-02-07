@@ -29,7 +29,6 @@
         "illuminate/console": "9.*",
         "illuminate/contracts": "9.*",
         "illuminate/events": "9.*",
-        "illuminate/foundation": "9.*",
         "illuminate/http": "9.*",
         "illuminate/pipeline": "9.*",
         "illuminate/queue": "9.*",
