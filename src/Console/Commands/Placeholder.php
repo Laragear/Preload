@@ -23,7 +23,7 @@ class Placeholder extends Command
      *
      * @var string
      */
-    protected $signature = 'preload:placeholder {--force : Skips overwrite confirmation on production}';
+    protected $signature = 'preload:placeholder {--force : Skips overwrite confirmation}';
 
     /**
      * The console command description.
