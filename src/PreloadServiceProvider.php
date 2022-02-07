@@ -55,7 +55,7 @@ class PreloadServiceProvider extends ServiceProvider
     }
 
     /**
-     * Checks if Laraload should run.
+     * Checks if Preload should run.
      *
      * @param  \Illuminate\Contracts\Config\Repository  $config
      * @return bool

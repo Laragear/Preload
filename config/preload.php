@@ -7,9 +7,9 @@ return [
     | Main Switch
     |--------------------------------------------------------------------------
     |
-    | Laraload detects if this environment is production and automatically runs
-    | when under it. You can forcefully disable or enable it. Laraload does
-    | not run if your application is running tests or console commands.
+    | Preload detects if this environment is production and automatically runs
+    | when under it. You can forcefully disable or enable it. Preload doesn't
+    | run if your application is running test suites or any console command.
     |
     | Supported: "null", "true", "false".
     |
