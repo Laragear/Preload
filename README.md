@@ -179,13 +179,18 @@ For most applications, 32MB is fine, but you may fine-tune it for your project s
 
 return [
     'job' => [
-        'connection' => null,
-        'queue' => null,
+        'connection' => env('PRELOAD_JOB_CONNECTION'),
+        'queue' => env('PRELOAD_JOB_QUEUE'),
     ],
 ];
 ```
 
-Once the job to persist the list is dispatched, it uses the queue and connection set here. When `null`, the framework uses the default connection and/or queue.
+Once the job to persist the list is dispatched, it uses the queue and connection set here. When `null`, the framework uses the default connection and/or queue. You can use your `.env` file to set them:
+
+```dotenv
+PRELOAD_JOB_CONNECTION=redis
+PRELOAD_JOB_QUEUE=low
+```
 
 #### Path
 
