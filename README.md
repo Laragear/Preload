@@ -22,7 +22,7 @@ This package generates a [PHP preloading](https://www.php.net/manual/en/opcache.
 Require this using Composer into your project
 
 ```bash
-composer require darkghosthunter/laraload
+composer require laragear/preload
 ```
 
 > This package doesn't require the `ext-zend-opcache` extension to install. Just be sure to have it [enabled in your deployment server](https://www.php.net/manual/en/book.opcache.php).
