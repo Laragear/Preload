@@ -1,0 +1,58 @@
+{
+    "name": "laragear/preload",
+    "type": "library",
+    "description": "Effortlessly make a Preload script for your Laravel application.",
+    "keywords": [
+        "darkghosthunter",
+        "preloader",
+        "preload",
+        "php",
+        "laragear",
+        "opcache"
+    ],
+    "license": "proprietary",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "homepage": "https://github.com/laragear/preload",
+    "authors": [
+        {
+            "name": "Italo Israel Baeza Cabrera",
+            "email": "darkghosthunter@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.0.2",
+        "ext-json": "*",
+        "symfony/finder": "6.*",
+        "illuminate/config": "9.*",
+        "illuminate/console": "9.*",
+        "illuminate/contracts": "9.*",
+        "illuminate/events": "9.*",
+        "illuminate/foundation": "9.*",
+        "illuminate/http": "9.*",
+        "illuminate/pipeline": "9.*",
+        "illuminate/queue": "9.*",
+        "illuminate/support": "9.*"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^7.0",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Laragear\\Preload\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --coverage-clover build/logs/clover.xml"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

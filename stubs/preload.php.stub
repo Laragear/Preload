@@ -1,0 +1,54 @@
+<?php
+/**
+ * Preloader Script
+ *
+ * This file is generated automatically by the Laragear Preload package.
+ *
+ * The following script uses `@mechanism` syntax to preload each file in this list into Opcache.
+ * To full enable preload, add this file to your `php.ini` in `opcache.preload` key to preload
+ * this list of files PHP at startup. This file also includes some information about Opcache.
+ *
+ * Add (or update) this line in `php.ini`:
+ *
+ *     opcache.preload=@output
+ *
+ * Server restart is not required.
+ *
+ * --- Config ---
+ * Generated at: @generated_at
+ * Opcache
+ *     - Used Memory: @opcache_memory_used MB
+ *     - Free Memory: @opcache_memory_free MB
+ *     - Wasted Memory: @opcache_memory_wasted MB
+ *     - Cached files: @opcache_files
+ *     - Hit rate: @opcache_hit_rate%
+ *     - Misses: @opcache_misses
+ * Preloader config
+ *     - Memory limit: @preloader_memory_limit
+ *     - Files excluded: @preloader_excluded
+ *     - Files appended: @preloader_appended
+ *
+ *
+ * For more information:
+ * @see https://github.com/laragear/preload
+ */
+
+@autoload
+
+$files = [@list];
+
+foreach ($files as $file) {
+    try {
+        if (!(\is_file($file) && \is_readable($file))) {
+            @failure
+        }
+        @mechanism;
+    } catch (\Throwable $e) {
+        echo 'Preloader Script has stopped with an error' . \PHP_EOL .
+             'Message: ' . $e->getMessage() . \PHP_EOL .
+             'File: ' . $file . \PHP_EOL;
+
+        throw $e;
+    }
+}
+
