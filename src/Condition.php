@@ -17,10 +17,7 @@ class Condition
      * @param  \Illuminate\Contracts\Foundation\Application  $app
      * @param  \Closure(\Illuminate\Http\Request, \Symfony\Component\HttpFoundation\Response, array):bool  $callback
      */
-    public function __construct(
-        protected Application $app,
-        protected Closure $callback
-    )
+    public function __construct(protected Application $app, protected Closure $callback)
     {
         //
     }

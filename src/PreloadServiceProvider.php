@@ -2,11 +2,9 @@
 
 namespace Laragear\Preload;
 
-use Closure;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Http\Kernel;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
 use Laragear\Preload\Http\Middleware\PreloadMiddleware;
 

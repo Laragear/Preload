@@ -5,6 +5,7 @@ namespace Laragear\Preload\Lister\Pipes;
 use Closure;
 use Laragear\Preload\Listing;
 use Laragear\Preload\Preloader;
+use function max;
 
 class MayAppendExternalFiles
 {

@@ -27,7 +27,7 @@ class MayExcludeExternalFiles
      */
     public function handle(Listing $listing, Closure $next): Listing
     {
-        foreach ($listing->exclude as $key => $exclude) {
+        foreach ($listing->exclude as $exclude) {
             $excluded = $this->preload->getFilesFromFinder($exclude)->flip();
 
             $listing->excludeCount += $excluded->count();

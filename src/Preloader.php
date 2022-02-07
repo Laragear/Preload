@@ -7,6 +7,8 @@ use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Support\Collection;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use function is_string;
+use function resolve;
 
 class Preloader
 {
