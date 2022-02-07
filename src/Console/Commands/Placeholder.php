@@ -83,7 +83,7 @@ class Placeholder extends Command
      */
     protected function deniesOverwrite(): bool
     {
-        if ($this->hasOption('force')) {
+        if ($this->option('force')) {
             return false;
         }
 
