@@ -11,10 +11,14 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [7.4, 8.0]
-        dependency-version: [prefer-lowest, prefer-stable]
+        php: [8.0, 8.1]
+        laravel: [9.*]
+        dependency-version: [prefer-stable, prefer-lowest]
+        include:
+          - laravel: 9.*
+            testbench: 7.*
 
-    name: PHP ${{ matrix.php }} - ${{ matrix.dependency-version }}
+    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} - ${{ matrix.dependency-version }}
 
     steps:
       - name: Checkout
@@ -31,11 +35,12 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.composer/cache/files
-          key: ${{ runner.os }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
-          restore-keys: ${{ runner.os }}-php-${{ matrix.php }}-composer-
+          key: ${{ runner.os }}-laravel-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+          restore-keys: ${{ runner.os }}-laravel-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-
 
       - name: Install dependencies
         run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-progress --no-update
           composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress --no-suggest
 
       - name: Run Tests
