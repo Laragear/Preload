@@ -98,14 +98,11 @@ return [
     'autoload' => base_path('vendor/autoload.php'),
     'ignore_not_found' => true,
 ];
-
 ```
 
 #### Enable
 
 ```php
-<?php
-
 return [
     'enable' => env('PRELOAD_ENABLED'),
 ];
@@ -120,8 +117,6 @@ PRELOAD_ENABLED=true
 #### Condition
 
 ```php
-<?php
-
 return [
     'condition' => [
         'store' => null,
@@ -140,15 +135,13 @@ use Illuminate\Http\Request;
 use Laragear\Preload\Facades\Preload;
 
 Preload::condition(function (array $options) {
-    return random_int(0, $options['max']) === (int) ceil($options['max'] / 2);
+    return random_int(1, $options['max']) < 3;
 });
 ```
 
 ### Project Scope
 
 ```php
-<?php
-
 return [
     'project_only' => true,
 ];
@@ -159,8 +152,6 @@ Some PHP processes may be shared between multiple projects. To avoid preloading 
 #### Memory Limit
 
 ```php
-<?php
-
 return [
     'memory' => 64,
 ];
@@ -175,8 +166,6 @@ For most applications, 32MB is fine, but you may fine-tune it for your project s
 #### Job configuration
 
 ```php
-<?php
-
 return [
     'job' => [
         'connection' => env('PRELOAD_JOB_CONNECTION'),
@@ -195,8 +184,6 @@ PRELOAD_JOB_QUEUE=low
 #### Path
 
 ```php
-<?php
-
 return [
     'path' => '/var/www/preloads/my_preload.php',
 ];
@@ -209,8 +196,6 @@ By default, the script is saved in your project root path, but you can change th
 #### Method
 
 ```php
-<?php
-
 return [
     'use_require' => true,
     'autoload' => base_path('vendor/autoload.php'),
@@ -228,8 +213,6 @@ If you plan use `require_once`, ensure you have set the correct path to the Comp
 ### Ignore not found files
 
 ```php
-<?php
-
 return [
     'ignore_not_found' => true,
 ];
@@ -283,11 +266,11 @@ use Illuminate\Support\Facades\Cache;
 public function register()
 {
     Preload::condition(function () {
-        if (Cache::has('preload was generated for yesterday')) {
+        if (Cache::has('preload generated last day')) {
             return false;
         }
         
-        Cache::put('preload was generated for yesterday', true, now()->endOfDay());
+        Cache::put('preload generated last day', true, now()->endOfDay());
         
         return true;
     });
@@ -318,7 +301,7 @@ Opcache is not enabled when using PHP CLI, and if it is, it gathers CLI statisti
 
 * **Does this excludes the package itself from the list? Does make a difference?**
 
-No, and it does not. Only the middleware may be heavily requested (as it's global), but most of this package files won't.
+No, and it does not. Only the global middleware and condition may be heavily requested, but most of this package files won't.
 
 * **I activated this Preload but my application still doesn't feel _faster_. What's wrong?**
 
@@ -328,11 +311,9 @@ If you still _feel_ your app is slow, remember to benchmark your app, cache your
 
 * **How the list is created?**
 
-Basically: the most hit files in descending order. Each file consumes memory, so the list is _soft-cut_ when the cumulative memory usage reaches the limit (32MB by default).
+Basically: the most hit files in descending order. Each file consumes memory, so the list is cut when the cumulative memory usage reaches the limit (32MB by default).
 
-* **You said "_soft-cut_", why is that?**
-
-Each file is loaded using `opcache_compile_file()`. If the last file is a class with links outside the list, PHP will issue some warnings, which is normal and intended, but it won't compile the linked files if these were not added before.
+If the last file is a class with links outside the list, PHP will issue some warnings, which is normal and intended, but it won't compile the linked files if these were not added before.
 
 * **Can I just put all the files in my project?**
 
@@ -344,7 +325,7 @@ You shouldn't. Including all the files of your application may have diminishing 
 
 * **Can I deactivate the middleware? Or check only XXX status?**
 
-[Yes.](#enable) If you need to check only for a given response status code, you should make your own global middleware.
+[Yes.](#enable) If you need to check only for a given response status code, you can create a custom middleware.
 
 * **Does the middleware works on unit testing?**
 
