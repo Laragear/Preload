@@ -30,13 +30,17 @@ class ConditionTest extends TestCase
 
     public function test_allows_custom_condition(): void
     {
-        $condition = function () {
+        $called = false;
+
+        $condition = function () use (&$called) {
+            $called = true;
             return true;
         };
 
         Preload::condition($condition);
 
         static::assertTrue($this->condition->shouldGenerate(new Request(), new Response()));
+        static::assertTrue($called);
     }
 
     public function test_condition_is_resolved_by_service_container(): void

@@ -12,9 +12,9 @@ class PlaceholderTest extends TestCase
     {
         $path = base_path('preload.php');
 
-        File::shouldReceive('exists')->andReturnFalse();
-        File::shouldReceive('put')->with($path, null)->andReturnNull();
-        File::shouldReceive('get')->with(Preloader::PLACEHOLDER)->andReturnNull();
+        File::expects('exists')->andReturnFalse();
+        File::expects('put')->with($path, null)->andReturnNull();
+        File::expects('get')->with(Preloader::PLACEHOLDER)->andReturnNull();
 
         $command = $this->artisan('preload:placeholder');
 
@@ -28,13 +28,13 @@ class PlaceholderTest extends TestCase
 
     public function test_doesnt_overwrite_same_placeholder(): void
     {
-        File::shouldReceive('exists')->andReturnTrue();
+        File::expects('exists')->andReturnTrue();
 
-        File::shouldReceive('hash')->with(base_path('preload.php'))->andReturn('foo');
-        File::shouldReceive('hash')->with(Preloader::PLACEHOLDER)->andReturn('foo');
+        File::expects('hash')->with(base_path('preload.php'))->andReturn('foo');
+        File::expects('hash')->with(Preloader::PLACEHOLDER)->andReturn('foo');
 
-        File::shouldReceive('put')->never();
-        File::shouldReceive('get')->never();
+        File::expects('put')->never();
+        File::expects('get')->never();
 
         $command = $this->artisan('preload:placeholder');
 
@@ -45,13 +45,13 @@ class PlaceholderTest extends TestCase
 
     public function test_doesnt_overwrites_live_preload_list(): void
     {
-        File::shouldReceive('exists')->andReturnTrue();
+        File::expects('exists')->andReturnTrue();
 
-        File::shouldReceive('hash')->with(base_path('preload.php'))->andReturn('foo');
-        File::shouldReceive('hash')->with(Preloader::PLACEHOLDER)->andReturn('bar');
+        File::expects('hash')->with(base_path('preload.php'))->andReturn('foo');
+        File::expects('hash')->with(Preloader::PLACEHOLDER)->andReturn('bar');
 
-        File::shouldReceive('put')->never();
-        File::shouldReceive('get')->never();
+        File::expects('put')->never();
+        File::expects('get')->never();
 
         $command = $this->artisan('preload:placeholder');
 
@@ -63,13 +63,13 @@ class PlaceholderTest extends TestCase
 
     public function test_overwrites_live_preload_list(): void
     {
-        File::shouldReceive('exists')->andReturnTrue();
+        File::expects('exists')->andReturnTrue();
 
-        File::shouldReceive('hash')->with(base_path('preload.php'))->andReturn('foo');
-        File::shouldReceive('hash')->with(Preloader::PLACEHOLDER)->andReturn('bar');
+        File::expects('hash')->with(base_path('preload.php'))->andReturn('foo');
+        File::expects('hash')->with(Preloader::PLACEHOLDER)->andReturn('bar');
 
-        File::shouldReceive('put')->with(base_path('preload.php'), null)->andReturnNull();
-        File::shouldReceive('get')->with(Preloader::PLACEHOLDER)->andReturnNull();
+        File::expects('put')->with(base_path('preload.php'), null)->andReturnNull();
+        File::expects('get')->with(Preloader::PLACEHOLDER)->andReturnNull();
 
         $command = $this->artisan('preload:placeholder');
 
@@ -80,13 +80,13 @@ class PlaceholderTest extends TestCase
 
     public function test_overwrites_live_preload_list_with_force(): void
     {
-        File::shouldReceive('exists')->andReturnTrue();
+        File::expects('exists')->andReturnTrue();
 
-        File::shouldReceive('hash')->with(base_path('preload.php'))->andReturn('foo');
-        File::shouldReceive('hash')->with(Preloader::PLACEHOLDER)->andReturn('bar');
+        File::expects('hash')->with(base_path('preload.php'))->andReturn('foo');
+        File::expects('hash')->with(Preloader::PLACEHOLDER)->andReturn('bar');
 
-        File::shouldReceive('put')->with(base_path('preload.php'), null)->andReturnNull();
-        File::shouldReceive('get')->with(Preloader::PLACEHOLDER)->andReturnNull();
+        File::expects('put')->with(base_path('preload.php'), null)->andReturnNull();
+        File::expects('get')->with(Preloader::PLACEHOLDER)->andReturnNull();
 
         $command = $this->artisan('preload:placeholder --force');
 

@@ -5,11 +5,8 @@ namespace Tests;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use Laragear\Preload\Condition;
-use Laragear\Preload\Console\Commands\Placeholder;
 use Laragear\Preload\Http\Middleware\PreloadMiddleware;
 use Laragear\Preload\Preloader;
 use Laragear\Preload\PreloadServiceProvider;
@@ -19,8 +16,8 @@ class ServiceProviderTest extends TestCase
     public function test_merges_config(): void
     {
         static::assertSame(
-            File::getRequire(__DIR__ . '/../config/preload.php'),
-            Config::get('preload')
+            $this->app->make('files')->getRequire(__DIR__ . '/../config/preload.php'),
+            $this->app->make('config')->get('preload')
         );
     }
 
@@ -37,8 +34,9 @@ class ServiceProviderTest extends TestCase
     public function test_doesnt_registers_global_middleware_on_testing(): void
     {
         static::assertSame('testing', $this->app->environment());
+
         static::assertFalse(
-            app(Kernel::class)->hasMiddleware(PreloadMiddleware::class)
+            $this->app->make(Kernel::class)->hasMiddleware(PreloadMiddleware::class)
         );
     }
 
@@ -48,7 +46,7 @@ class ServiceProviderTest extends TestCase
     public function test_registers_global_middleware_on_production(): void
     {
         static::assertTrue(
-            app(Kernel::class)->hasMiddleware(PreloadMiddleware::class)
+            $this->app->make(Kernel::class)->hasMiddleware(PreloadMiddleware::class)
         );
     }
 
@@ -81,12 +79,9 @@ class ServiceProviderTest extends TestCase
     {
         static::assertContains(PreloadServiceProvider::class, ServiceProvider::publishableProviders());
 
-        static::assertArrayHasKey(
-            PreloadServiceProvider::CONFIG, ServiceProvider::pathsToPublish(PreloadServiceProvider::class)
-        );
-
-        static::assertContains(
-            config_path('preload.php'), ServiceProvider::pathsToPublish(PreloadServiceProvider::class)
+        static::assertSame(
+            [PreloadServiceProvider::CONFIG => $this->app->configPath('preload.php')],
+            ServiceProvider::pathsToPublish(PreloadServiceProvider::class, 'config')
         );
     }
 }

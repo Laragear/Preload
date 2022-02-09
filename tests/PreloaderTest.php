@@ -3,6 +3,7 @@
 namespace Tests;
 
 use ArrayIterator;
+use Closure;
 use Illuminate\Support\Collection;
 use Laragear\Preload\Compiler\Compiler;
 use Laragear\Preload\Facades\Preload;
@@ -20,6 +21,8 @@ class PreloaderTest extends TestCase
 
         $lister->allows('send')->once()->withArgs(static function (Listing $listing): bool {
             static::assertCount(2, $listing->exclude);
+            static::assertInstanceOf(Closure::class, $listing->exclude[0]);
+            static::assertInstanceOf(Closure::class, $listing->exclude[1]);
             return true;
         })->andReturnSelf();
 
@@ -39,6 +42,8 @@ class PreloaderTest extends TestCase
 
         $lister->allows('send')->once()->withArgs(static function (Listing $listing): bool {
             static::assertCount(2, $listing->append);
+            static::assertInstanceOf(Closure::class, $listing->append[0]);
+            static::assertInstanceOf(Closure::class, $listing->append[1]);
             return true;
         })->andReturnSelf();
 
