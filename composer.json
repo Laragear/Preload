@@ -1,24 +1,23 @@
 {
     "name": "laragear/preload",
-    "type": "library",
     "description": "Effortlessly make a Preload script for your Laravel application.",
+    "type": "library",
+    "license": "propietary",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
     "keywords": [
-        "darkghosthunter",
+        "laravel",
         "preloader",
         "preload",
         "php",
         "laragear",
         "opcache"
     ],
-    "license": "proprietary",
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "homepage": "https://github.com/laragear/preload",
     "authors": [
         {
             "name": "Italo Israel Baeza Cabrera",
             "email": "darkghosthunter@gmail.com",
-            "role": "Developer"
+            "homepage": "https://patreon.com/packagesforlaravel"
         }
     ],
     "require": {
@@ -49,9 +48,34 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/phpunit --coverage-clover build/logs/clover.xml"
+        "test": "vendor/bin/phpunit --coverage-clover build/logs/clover.xml",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
     },
     "config": {
         "sort-packages": true
-    }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Laragear\\Preload\\PreloadServiceProvider"
+            ],
+            "aliases": {
+                "Preload": "Laragear\\Preload\\Facades\\Preload"
+            }
+        }
+    },
+    "funding": [
+        {
+            "type": "Patreon",
+            "url": "https://patreon.com/PackagesForLaravel"
+        },
+        {
+            "type": "Ko-Fi",
+            "url": "https://ko-fi.com/DarkGhostHunter"
+        },
+        {
+            "type": "Paypal",
+            "url": "https://paypal.me/darkghosthunter"
+        }
+    ]
 }

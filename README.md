@@ -1,11 +1,4 @@
-![Braden Collum - Unsplash (UL) #9HI8UJMSdZA](https://images.unsplash.com/photo-1461896836934-ffe607ba8211?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1280&h=400&q=80)
-
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/laragear/preload.svg?style=flat-square)](https://packagist.org/packages/laragear/preload) [![License](https://poser.pugx.org/laragear/preload/license)](https://packagist.org/packages/darkghosthunter/preloader)
-![](https://img.shields.io/packagist/php-v/laragear/preload.svg)
- ![](https://github.com/Laragear/Preload/workflows/PHP%20Composer/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/Laragear/Preload/badge.svg?branch=master)](https://coveralls.io/github/Laragear/Preload?branch=master)
-
-# Laravel Preload
+# Preload
 
 Dynamically preload your Laravel application. 
 
@@ -31,7 +24,7 @@ composer require laragear/preload
 
 By default, PHP needs to read, interpret and compile each requested file in your project. When Opcache is enabled, it will keep interpreted files in memory to avoid reading them again from the file system.
 
-Opcache preloading stores in memory a given list of files when the PHP process starts, before normal execution. This makes the application _faster_ during the first requests, as these files to read are already in memory.
+Opcache preloading stores in memory a given list of files when the PHP process starts, before normal execution. This makes the application _faster_ during the first requests, as these files to read are already in memory. With JIT, these files are also compiled into byte-code.
 
 This package generates a preload file with the most accessed files of your application. Once done, you can point the generated list into your `php.ini`:
 
@@ -43,7 +36,7 @@ After that, the next time PHP starts, this list of files will be preloaded autom
 
 ## Usage
 
-By default, this package pushes a queued job data each 10,000 requests, containing a list of all the most accessed files of the application.
+By default, this package pushes a queued job data each 10,000 requests, containing a limited list of the most accessed files of the application.
 
 First, since you will start with no script generated, create an empty preload list using the `preload:placeholder` command.
 
@@ -57,7 +50,7 @@ php artisan preload:placeholder
 # opcache.preload = '/www/app/preload.php';
 ```
 
-> The command won't rewrite another placeholder file if it exists. You can force the operation using `--force`. 
+> The command won't replace the file if it exists. You can force the operation using `--force`. 
 
 Add the preload file path in your `php.ini`:
 
@@ -126,9 +119,7 @@ return [
 ];
 ```
 
-This package comes with a _simple_ condition callback that returns `true` when it counts 10,000 successful requests. 
-
-You can define [your own condition](#custom-condition). This array is sent to the callback as the `$options` parameter.
+This package comes with a _simple_ condition callback that returns `true` when it counts 10,000 successful requests. This array is sent to the callback as the `$options` parameter, which will be useful if you want to define [your own condition](#custom-condition).
 
 ```php
 use Illuminate\Http\Request;
@@ -174,7 +165,7 @@ return [
 ];
 ```
 
-Once the job to persist the list is dispatched, it uses the queue and connection set here. When `null`, the framework uses the default connection and/or queue. You can use your `.env` file to set them:
+When the job receives the list to persist, it will be dispatched to the connection and queue set here. When `null`, the framework uses the defaults. You can use your `.env` file to set them:
 
 ```dotenv
 PRELOAD_JOB_CONNECTION=redis
@@ -185,13 +176,13 @@ PRELOAD_JOB_QUEUE=low
 
 ```php
 return [
-    'path' => '/var/www/preloads/my_preload.php',
+    'path' => base_path('preload.php'),
 ];
 ```
 
-By default, the script is saved in your project root path, but you can change the filename and path to save it as long PHP has permissions to write on it. Whatever you place it, never place it in a publicly-accessible directory, like `public` or `storage/app/public`.
+By default, the script is saved in your project root path, but you can change the filename and path to save it as long PHP has permissions to write on it. Whatever you place it, never do it in a public/accessible directory, like `public` or `storage/app/public`.
 
-> Double-check your file permissions to avoid failures on production.
+> Double-check your file permissions to avoid failures on production when reading the file.
 
 #### Method
 
@@ -206,7 +197,7 @@ Opcache allows preloading files using `require_once` or `opcache_compile_file()`
 
 Preload uses `opcache_compile_file()` for better manageability on the files preloaded. Some unresolved links may output warnings at startup, but nothing critical.
 
-Using `require_once` will **execute** all files. By resolving all the links (imports, parent classes, traits, interfaces, etc.) before compiling it, it may output heavy errors on files that shouldn't be executed. Depending on your application, you may want to use one over the other.
+Using `require_once` will **execute** all files. By resolving all the links (imports, parent classes, traits, interfaces, etc.) before compiling it, it may output heavy errors on files that shouldn't be executed like plain scripts. Depending on your application, you may want to use one over the other.
 
 If you plan use `require_once`, ensure you have set the correct path to the Composer Autoloader, since it will be used to resolve classes, among other files.
 
@@ -257,7 +248,7 @@ class AppServiceProvider extends ServiceProvider
 
 This package includes a simple condition callback: return `true` each 10,000 requests. The number of requests, the cache to use and the key for the cache can be set in the [`condition` section of the configuration](#condition).
 
-On some scenarios, you may want to use a random seed, or generate a list periodically. You can create your own condition by setting the callback in your `AppServiceProvider`.
+On some scenarios, you may want to use a random seed, or generate a list periodically. You can create your own condition by setting the callback in your `AppServiceProvider`:
 
 ```php
 use Laragear\Preload\Facades\Preload;
@@ -266,11 +257,11 @@ use Illuminate\Support\Facades\Cache;
 public function register()
 {
     Preload::condition(function () {
-        if (Cache::has('preload generated last day')) {
+        if (Cache::has('preload generated yesterday')) {
             return false;
         }
         
-        Cache::put('preload generated last day', true, now()->endOfDay());
+        Cache::put('preload generated yesterday', true, now()->endOfDay());
         
         return true;
     });
@@ -283,11 +274,11 @@ public function register()
 
 * **Can I manually disable Preloader?**
 
-[Yes.](#enable) This basically disables the global middleware.
+[Yes.](#enable) This basically doesn't register the global middleware.
 
 * **Do I need to restart PHP after the list is generated?**
 
-No, as the list generated is already in Opcache memory.
+No, the list generated is already in Opcache memory.
 
 * **The package returned errors when I used it!**
 
@@ -305,7 +296,7 @@ No, and it does not. Only the global middleware and condition may be heavily req
 
 * **I activated this Preload but my application still doesn't feel _faster_. What's wrong?**
 
-Initial requests should be fast once the preload script is loaded. This does not affect Opcache or the whole application performance in any other way.
+Initial requests _should_ be faster under a preload script. This does not affect Opcache or the whole application performance in any other way.
 
 If you still _feel_ your app is slow, remember to benchmark your app, cache your config and views, check your database queries and API calls, and queue expensive logic, among other things. You can also use [Laravel Octane](https://github.com/laravel/octane).
 
@@ -317,7 +308,9 @@ If the last file is a class with links outside the list, PHP will issue some war
 
 * **Can I just put all the files in my project?**
 
-You shouldn't. Including all the files of your application may have diminishing returns compared to, for example, only the most requested. You can always benchmark your app yourself to prove this is wrong for your exclusive case.
+You shouldn't. Including all the files of your application may have diminishing returns compared to, for example, only the most requested. Also, it will make the preloading take more time.
+
+You can always benchmark your app yourself to prove this is wrong for your exclusive case.
 
 * **Can I use a custom condition?**
 
@@ -336,3 +329,7 @@ Nope. The middleware is not registered if the application is running under Unit 
 The `ListGenerated` and `ScriptStored` events are fired when the list is generated during a request, and the script is saved through a queued job, respectively.
 
 You can [add a Listener](https://laravel.com/docs/events#registering-events-and-listeners) to dispatch an email or a Slack notification.
+
+## Security
+
+If you discover any security related issues, please email darkghosthunter@gmail.com instead of using the issue tracker.
