@@ -34,6 +34,7 @@ class ConditionTest extends TestCase
 
         $condition = function () use (&$called) {
             $called = true;
+
             return true;
         };
 
