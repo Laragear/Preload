@@ -10,3 +10,4 @@
 /tests              export-ignore
 /.editorconfig      export-ignore
 /.github            export-ignore
+/.assets            export-ignore
