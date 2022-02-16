@@ -336,6 +336,13 @@ The `ListGenerated` and `ScriptStored` events are fired when the list is generat
 
 You can [add a Listener](https://laravel.com/docs/events#registering-events-and-listeners) to dispatch an email or a Slack notification.
 
+## Laravel Octane Compatibility
+
+- A Preloader class is registered with the application and config. There is no reason to resolve it on boot time.
+- A Condition class is registered with the application and config. Config is meant to be unchangeable for security purposes.
+
+Aside from that, the (real) condition callback is always executed each Request using the Service Container, so it can (but shouldn't) resolve a fresh config repository. 
+
 ## Security
 
 If you discover any security related issues, please email darkghosthunter@gmail.com instead of using the issue tracker.
