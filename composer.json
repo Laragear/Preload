@@ -74,12 +74,12 @@
             "url": "https://ko-fi.com/DarkGhostHunter"
         },
         {
-            "type": "Paypal",
-            "url": "https://paypal.me/darkghosthunter"
-        },
-        {
             "type": "Buy me a cofee",
             "url": "https://www.buymeacoffee.com/darkghosthunter"
+        },
+        {
+            "type": "Paypal",
+            "url": "https://paypal.me/darkghosthunter"
         }
     ]
 }
