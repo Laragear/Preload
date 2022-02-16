@@ -46,7 +46,7 @@ class UpdateOpcacheConfig
                 $opcache['opcache_statistics']['num_cached_scripts'],
                 number_format($opcache['opcache_statistics']['opcache_hit_rate'], 2, '.', ''),
                 $opcache['opcache_statistics']['misses'],
-            ]
+            ],
         ];
     }
 }

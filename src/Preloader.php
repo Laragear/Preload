@@ -5,10 +5,10 @@ namespace Laragear\Preload;
 use Closure;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Support\Collection;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 use function is_string;
 use function resolve;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 class Preloader
 {
@@ -130,5 +130,4 @@ class Preloader
             return $file->getRealPath();
         });
     }
-
 }

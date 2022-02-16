@@ -35,6 +35,7 @@ class PreloadMiddlewareTest extends TestCase
 
         $bus->assertDispatched(StorePreloadScript::class, static function (StorePreloadScript $job) use ($listing): bool {
             static::assertSame($listing, $job->listing);
+
             return true;
         });
     }

@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Config;
 use Laragear\Preload\Condition;
 use Laragear\Preload\Facades\Preload;
 use Laragear\Preload\Jobs\StorePreloadScript;
-use Symfony\Component\HttpFoundation\Response;
 use function resolve;
+use Symfony\Component\HttpFoundation\Response;
 
 class PreloadMiddleware
 {
@@ -18,7 +18,6 @@ class PreloadMiddleware
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     *
      * @return mixed
      */
     public function handle(Request $request, Closure $next): mixed
@@ -31,14 +30,13 @@ class PreloadMiddleware
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Symfony\Component\HttpFoundation\Response  $response
-     *
      * @return void
      */
     public function terminate(Request $request, Response $response)
     {
         if ($response->isSuccessful() && $this->conditionIsTrue($request, $response)) {
             $config = Config::get([
-                'preload.job.connection', 'preload.job.queue'
+                'preload.job.connection', 'preload.job.queue',
             ]);
 
             StorePreloadScript::dispatch(Preload::list())

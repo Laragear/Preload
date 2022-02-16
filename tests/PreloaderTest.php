@@ -23,6 +23,7 @@ class PreloaderTest extends TestCase
             static::assertCount(2, $listing->exclude);
             static::assertInstanceOf(Closure::class, $listing->exclude[0]);
             static::assertInstanceOf(Closure::class, $listing->exclude[1]);
+
             return true;
         })->andReturnSelf();
 
@@ -36,6 +37,7 @@ class PreloaderTest extends TestCase
 
         static::assertSame(['foo', 'bar'], $list->files->all());
     }
+
     public function test_adds_to_append(): void
     {
         $lister = $this->mock(Lister::class);
@@ -44,6 +46,7 @@ class PreloaderTest extends TestCase
             static::assertCount(2, $listing->append);
             static::assertInstanceOf(Closure::class, $listing->append[0]);
             static::assertInstanceOf(Closure::class, $listing->append[1]);
+
             return true;
         })->andReturnSelf();
 

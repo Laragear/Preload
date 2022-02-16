@@ -27,7 +27,7 @@ class ListerTest extends TestCase
             'external/foo.php' => [ // 3
                 'hits' => 20,
                 'memory_consumption' => 1024,
-                'last_used_timestamp' => 1400000000
+                'last_used_timestamp' => 1400000000,
             ],
         ]);
 
