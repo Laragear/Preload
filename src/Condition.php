@@ -4,7 +4,6 @@ namespace Laragear\Preload;
 
 use Closure;
 use Illuminate\Contracts\Cache\Factory as CacheContract;
-use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
