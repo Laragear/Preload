@@ -2,7 +2,7 @@
     "name": "laragear/preload",
     "description": "Effortlessly make a Preload script for your Laravel application.",
     "type": "library",
-    "license": "propietary",
+    "license": "MIT",
     "minimum-stability": "stable",
     "prefer-stable": true,
     "keywords": [
@@ -76,6 +76,10 @@
         {
             "type": "Paypal",
             "url": "https://paypal.me/darkghosthunter"
+        },
+        {
+            "type": "Buy me a cofee",
+            "url": "https://www.buymeacoffee.com/darkghosthunter"
         }
     ]
 }
