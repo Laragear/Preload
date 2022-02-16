@@ -22,7 +22,7 @@ class PreloadServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigFrom(static::CONFIG, 'preload');
 
@@ -41,7 +41,7 @@ class PreloadServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(Repository $config, Kernel $kernel)
+    public function boot(Repository $config, Kernel $kernel): void
     {
         // We will only register the middleware if not Running Unit Tests
         if ($this->shouldRun($config)) {
