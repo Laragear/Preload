@@ -32,10 +32,10 @@ class CutListByMemoryLimit
      */
     protected function cutList(Listing $listing): void
     {
-        $limit = (int) round($listing->memory * 1024**2);
+        $limit = (int) round($listing->memory * 1024 ** 2);
 
         $listing->files = $listing->files->takeUntil(
-            static function (array $file) use ($listing, $limit, &$memory): bool {
+            static function (array $file) use ($limit, &$memory): bool {
                 $memory += $file['memory_consumption'];
 
                 return $memory > $limit;

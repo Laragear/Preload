@@ -37,8 +37,8 @@ class CompilerTest extends TestCase
 
     protected function getFilesAsString(): string
     {
-        return PHP_EOL .
-            '    ' . "'" . $this->list->files->implode("'," . PHP_EOL . "    '") . "'" .
+        return PHP_EOL.
+            '    '."'".$this->list->files->implode("',".PHP_EOL."    '")."'".
             PHP_EOL;
     }
 
@@ -125,6 +125,7 @@ SCRIPT
 
         $event->assertDispatched(PreloadGenerated::class, function (PreloadGenerated $event): bool {
             static::assertSame($this->list, $event->listing);
+
             return true;
         });
     }
@@ -238,7 +239,7 @@ SCRIPT
     public function test_exception_when_stub_not_readable(): void
     {
         $this->expectException(PreloadException::class);
-        $this->expectExceptionMessage('Cannot read the stub "' . Preloader::STUB . '" contents.');
+        $this->expectExceptionMessage('Cannot read the stub "'.Preloader::STUB.'" contents.');
 
         File::shouldReceive('get')->with(Preloader::STUB)
             ->andThrow(new FileNotFoundException('foo bar'));
@@ -250,7 +251,7 @@ SCRIPT
     {
         $this->expectException(PreloadException::class);
         $this->expectExceptionMessage(
-            'Composer Autoloader is missing in \'' . base_path('vendor/autoload.php') .'\''
+            'Composer Autoloader is missing in \''.base_path('vendor/autoload.php').'\''
         );
 
         $this->app->make('config')->set('preload.use_require', true);

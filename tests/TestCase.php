@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Laragear\Preload\Facades\Preload;
 use Laragear\Preload\PreloadServiceProvider;
@@ -14,7 +13,6 @@ abstract class TestCase extends BaseTestCase
      * Get package providers.
      *
      * @param  \Illuminate\Foundation\Application  $app
-     *
      * @return array
      */
     protected function getPackageProviders($app)
@@ -28,7 +26,6 @@ abstract class TestCase extends BaseTestCase
      * Override application aliases.
      *
      * @param  \Illuminate\Foundation\Application  $app
-     *
      * @return array
      */
     protected function getPackageAliases($app)
@@ -42,7 +39,6 @@ abstract class TestCase extends BaseTestCase
      * Define routes setup.
      *
      * @param  \Illuminate\Routing\Router  $router
-     *
      * @return void
      */
     protected function defineRoutes($router)

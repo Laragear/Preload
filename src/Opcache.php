@@ -2,11 +2,11 @@
 
 namespace Laragear\Preload;
 
-use RuntimeException;
 use function function_exists;
+use RuntimeException;
 
 /**
- * Class Opcache
+ * Class Opcache.
  *
  * This is just a class to enable mocking for testing.
  *
@@ -25,6 +25,7 @@ class Opcache
      * Get status information about the cache.
      *
      * @see https://www.php.net/manual/en/function.opcache-get-status.php
+     *
      * @return array
      */
     public function getStatus(): array
