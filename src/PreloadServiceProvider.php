@@ -38,7 +38,6 @@ class PreloadServiceProvider extends ServiceProvider
      *
      * @param  \Illuminate\Contracts\Config\Repository  $config
      * @param  \Illuminate\Contracts\Http\Kernel  $kernel
-     *
      * @return void
      */
     public function boot(Repository $config, Kernel $kernel): void

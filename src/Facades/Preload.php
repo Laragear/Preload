@@ -13,7 +13,6 @@ use Laragear\Preload\Preloader;
  * @method static \Laragear\Preload\Listing list()
  * @method static \Laragear\Preload\Listing generate(\Laragear\Preload\Listing $listing = null)
  * @method static \Illuminate\Support\Collection getFilesFromFinder(\Closure $callback)
- *
  * @method static \Laragear\Preload\Preloader getFacadeRoot()
  *
  * @see \Laragear\Preload\Preloader

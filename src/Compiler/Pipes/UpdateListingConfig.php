@@ -4,7 +4,6 @@ namespace Laragear\Preload\Compiler\Pipes;
 
 use Closure;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
-use Illuminate\Support\Facades\Config;
 use Laragear\Preload\Listing;
 
 class UpdateListingConfig
@@ -53,7 +52,7 @@ class UpdateListingConfig
                 $listing->memory ? $listing->memory.' MB' : '(disabled)',
                 $listing->appendCount,
                 $listing->excludeCount,
-            ]
+            ],
         ];
     }
 }
