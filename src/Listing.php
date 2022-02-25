@@ -32,8 +32,7 @@ class Listing
         public string $path = '',
         public ?Stringable $output = null,
         public array $opcache = [],
-    )
-    {
+    ) {
         //
     }
 }

@@ -60,11 +60,11 @@ class UpdateListingStatistics
                 $listing->path,
                 now()->toDateTimeString(),
                 $this->config->get('preload.use_require')
-                    ? 'require_once \'' . realpath($this->config->get('preload.autoloader')).'\';'
+                    ? 'require_once \''.realpath($this->config->get('preload.autoloader')).'\';'
                     : null,
                 $this->config->get('preload.ignore_not_found') ? 'continue;' : 'throw new \Exception("{$file} does not exist or is unreadable.");',
                 $this->config->get('preload.use_require') ? 'require_once $file' : 'opcache_compile_file($file)',
-            ]
+            ],
         ];
     }
 

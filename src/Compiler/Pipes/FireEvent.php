@@ -4,10 +4,7 @@ namespace Laragear\Preload\Compiler\Pipes;
 
 use Closure;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Collection;
 use Laragear\Preload\Events\PreloadGenerated;
-use Laragear\Preload\Exceptions\PreloadException;
 use Laragear\Preload\Listing;
 
 class FireEvent

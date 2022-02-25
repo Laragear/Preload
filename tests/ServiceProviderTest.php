@@ -16,7 +16,7 @@ class ServiceProviderTest extends TestCase
     public function test_merges_config(): void
     {
         static::assertSame(
-            $this->app->make('files')->getRequire(__DIR__ . '/../config/preload.php'),
+            $this->app->make('files')->getRequire(__DIR__.'/../config/preload.php'),
             $this->app->make('config')->get('preload')
         );
     }

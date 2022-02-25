@@ -46,7 +46,7 @@ class LoadPreloadStub
         try {
             return $this->files->get(Preloader::STUB);
         } catch (FileNotFoundException $e) {
-            throw new PreloadException('Cannot read the stub "' . Preloader::STUB . '" contents.', $e->getCode(), $e);
+            throw new PreloadException('Cannot read the stub "'.Preloader::STUB.'" contents.', $e->getCode(), $e);
         }
     }
 }

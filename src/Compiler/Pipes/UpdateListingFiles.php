@@ -18,8 +18,8 @@ class UpdateListingFiles
     public function handle(Listing $listing, Closure $next): Listing
     {
         $listing->output = $listing->output->replace('@list',
-            PHP_EOL .
-            '    ' . "'" . $listing->files->implode("'," . PHP_EOL . "    '") . "'" .
+            PHP_EOL.
+            '    '."'".$listing->files->implode("',".PHP_EOL."    '")."'".
             PHP_EOL
         );
 

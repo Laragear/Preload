@@ -7,7 +7,6 @@ use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Filesystem\Filesystem;
 use JetBrains\PhpStorm\Pure;
 use Laragear\Preload\Preloader;
-use function php_ini_loaded_file;
 
 class Placeholder extends Command
 {
@@ -43,15 +42,17 @@ class Placeholder extends Command
     {
         $path = $config->get('preload.path');
 
-        $this->comment('Generating a preload placeholder at: ' . $path);
+        $this->comment('Generating a preload placeholder at: '.$path);
         $this->newLine();
 
         if ($file->exists($path)) {
             if ($this->isPlaceholder($file, $path)) {
                 $this->info('A placeholder preload script already exists, no need to generate it again.');
+
                 return;
             } elseif ($this->deniesOverwrite()) {
                 $this->warn('A preload script already exists, skipping.');
+
                 return;
             }
         }
