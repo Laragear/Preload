@@ -53,7 +53,7 @@ class Condition
      *
      * Ensure your 'condition' array contains a 'store', 'key' and 'hits' keys.
      *
-     * @return \Closure(array):bool
+     * @return \Closure(array<int, midex>, \Illuminate\Contracts\Cache\Factory):bool
      */
     public static function countCondition(): Closure
     {
