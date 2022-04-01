@@ -104,14 +104,14 @@ return [
 
 ```php
 return [
-    'enable' => env('PRELOAD_ENABLED'),
+    'enable' => env('PRELOAD_ENABLE'),
 ];
 ```
 
 By default, a global middleware is registered automatically on production environments. You can forcefully enable or disable this middleware using an environment variable set to `true` or `false`, respectively.
 
 ```dotenv
-PRELOAD_ENABLED=true
+PRELOAD_ENABLE=true
 ```
 
 #### Condition
