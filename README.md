@@ -1,5 +1,10 @@
 # Preload
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/laragear/preload.svg)](https://packagist.org/packages/laragear/preload) [![Latest stable test run](https://github.com/Laragear/Preload/workflows/Tests/badge.svg)](https://github.com/Laragear/Preload/actions) [![Codecov coverage](https://codecov.io/gh/Laragear/Preload/branch/1.x/graph/badge.svg?token=DPGO1BDJCJ)](https://codecov.io/gh/Laragear/Preload) [![Maintainability](https://api.codeclimate.com/v1/badges/89a650b00897b4a87a52/maintainability)](https://codeclimate.com/github/Laragear/Preload/maintainability) [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Laragear_Preload&metric=alert_status)](https://sonarcloud.io/dashboard?id=Laragear_Preload) [![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/9.x/octane#introduction)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/laragear/preload.svg)](https://packagist.org/packages/laragear/preload)
+[![Latest stable test run](https://github.com/Laragear/Preload/workflows/Tests/badge.svg)](https://github.com/Laragear/Preload/actions)
+[![Codecov coverage](https://codecov.io/gh/Laragear/Preload/branch/1.x/graph/badge.svg?token=DPGO1BDJCJ)](https://codecov.io/gh/Laragear/Preload)
+[![Maintainability](https://api.codeclimate.com/v1/badges/89a650b00897b4a87a52/maintainability)](https://codeclimate.com/github/Laragear/Preload/maintainability)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Laragear_Preload&metric=alert_status)](https://sonarcloud.io/dashboard?id=Laragear_Preload)
+[![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/9.x/octane#introduction)
 
 Dynamically preload your Laravel application. 
 
@@ -7,7 +12,7 @@ This package generates a [PHP preloading](https://www.php.net/manual/en/opcache.
 
 ## Keep this package free
 
-[![](.assets/patreon.png)](https://patreon.com/packagesforlaravel)[![](.assets/ko-fi.png)](https://ko-fi.com/DarkGhostHunter)[![](.assets/buymeacoffee.png)](https://www.buymeacoffee.com/darkghosthunter)[![](.assets/paypal.png)](https://www.paypal.com/paypalme/darkghosthunter)
+[![](.github/assets/patreon.png)](https://patreon.com/packagesforlaravel)[![](.github/assets/ko-fi.png)](https://ko-fi.com/DarkGhostHunter)[![](.github/assets/buymeacoffee.png)](https://www.buymeacoffee.com/darkghosthunter)[![](.github/assets/paypal.png)](https://www.paypal.com/paypalme/darkghosthunter)
 
 Your support allows me to keep this package free, up-to-date and maintainable. Alternatively, you can **[spread the word!](http://twitter.com/share?text=I%20am%20using%20this%20cool%20PHP%20package&url=https://github.com%2FLaragear%2FPreload&hashtags=PHP,Laravel)**
 
