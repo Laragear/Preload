@@ -118,7 +118,7 @@ class Preloader
      * Return an array of the files from the Finder.
      *
      * @param  \Closure  $callback
-     * @return \Illuminate\Support\Collection<int, string>
+     * @return \Illuminate\Support\Collection<string, string>
      */
     public function getFilesFromFinder(Closure $callback): Collection
     {
