@@ -29,12 +29,12 @@ class Preloader
     /**
      * Create a new Preload instance.
      *
-     * @param  \Illuminate\Contracts\Config\Repository  config
+     * @param  \Illuminate\Contracts\Config\Repository  $config
      * @param  \Laragear\Preload\Opcache  $opcache
      * @param  \Laragear\Preload\Lister\Lister  $lister
      * @param  \Laragear\Preload\Compiler\Compiler  $compiler
-     * @param  array<string|\Closure(\Symfony\Component\Finder\Finder):void>  $append
-     * @param  array<string|\Closure(\Symfony\Component\Finder\Finder):void>  $exclude
+     * @param  array<int, string|\Closure(\Symfony\Component\Finder\Finder):void>  $append
+     * @param  array<int, string|\Closure(\Symfony\Component\Finder\Finder):void>  $exclude
      */
     public function __construct(
         protected ConfigContract $config,

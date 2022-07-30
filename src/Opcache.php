@@ -122,7 +122,7 @@ class Opcache
     /**
      * Returns the number of hits in Opcache.
      *
-     * @return mixed
+     * @return int
      */
     public function getHits(): int
     {
