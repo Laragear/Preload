@@ -44,6 +44,7 @@ class PreloadServiceProvider extends ServiceProvider
     {
         // We will only register the middleware if not Running Unit Tests
         if ($this->shouldRun($config)) {
+            // @phpstan-ignore-next-line
             $kernel->pushMiddleware(PreloadMiddleware::class);
         }
 
