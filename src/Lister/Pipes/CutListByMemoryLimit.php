@@ -27,7 +27,7 @@ class CutListByMemoryLimit
     /**
      * Cut the listing until the memory threshold is set.
      *
-     * @param  Listing  $listing
+     * @param  \Laragear\Preload\Listing  $listing
      * @return void
      */
     protected function cutList(Listing $listing): void

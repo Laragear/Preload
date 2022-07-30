@@ -10,7 +10,7 @@ class Listing
     /**
      * Create a new Listing instance.
      *
-     * @param  \Illuminate\Support\Collection<int,string>  $files
+     * @param  \Illuminate\Support\Collection<int,string|array<string,string>>  $files
      * @param  bool  $projectOnly
      * @param  array<int,\Closure(\Symfony\Component\Finder\Finder):void>  $exclude
      * @param  array<int,\Closure(\Symfony\Component\Finder\Finder):void>  $append
