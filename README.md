@@ -1,13 +1,18 @@
 # Preload
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/laragear/preload.svg)](https://packagist.org/packages/laragear/preload) [![Latest stable test run](https://github.com/Laragear/Preload/workflows/Tests/badge.svg)](https://github.com/Laragear/Preload/actions) [![Codecov coverage](https://codecov.io/gh/Laragear/Preload/branch/1.x/graph/badge.svg?token=DPGO1BDJCJ)](https://codecov.io/gh/Laragear/Preload) [![Maintainability](https://api.codeclimate.com/v1/badges/89a650b00897b4a87a52/maintainability)](https://codeclimate.com/github/Laragear/Preload/maintainability) [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Laragear_Preload&metric=alert_status)](https://sonarcloud.io/dashboard?id=Laragear_Preload) [![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/9.x/octane#introduction)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/laragear/preload.svg)](https://packagist.org/packages/laragear/preload)
+[![Latest stable test run](https://github.com/Laragear/Preload/workflows/Tests/badge.svg)](https://github.com/Laragear/Preload/actions)
+[![Codecov coverage](https://codecov.io/gh/Laragear/Preload/branch/1.x/graph/badge.svg?token=DPGO1BDJCJ)](https://codecov.io/gh/Laragear/Preload)
+[![Maintainability](https://api.codeclimate.com/v1/badges/89a650b00897b4a87a52/maintainability)](https://codeclimate.com/github/Laragear/Preload/maintainability)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Laragear_Preload&metric=alert_status)](https://sonarcloud.io/dashboard?id=Laragear_Preload)
+[![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/9.x/octane#introduction)
 
 Dynamically preload your Laravel application. 
 
 This package generates a [PHP preloading](https://www.php.net/manual/en/opcache.configuration.php#ini.opcache.preload) script from your Opcache statistics automatically. No need to hack your way in.
 
-## Keep this package free
+## Become a sponsor
 
-[![](.assets/patreon.png)](https://patreon.com/packagesforlaravel)[![](.assets/ko-fi.png)](https://ko-fi.com/DarkGhostHunter)[![](.assets/buymeacoffee.png)](https://www.buymeacoffee.com/darkghosthunter)[![](.assets/paypal.png)](https://www.paypal.com/paypalme/darkghosthunter)
+[![](.github/assets/support.png)](https://github.com/sponsors/DarkGhostHunter)
 
 Your support allows me to keep this package free, up-to-date and maintainable. Alternatively, you can **[spread the word!](http://twitter.com/share?text=I%20am%20using%20this%20cool%20PHP%20package&url=https://github.com%2FLaragear%2FPreload&hashtags=PHP,Laravel)**
 
@@ -336,6 +341,27 @@ Nope. The middleware is not registered if the application is running under Unit 
 The `ListGenerated` and `ScriptStored` events are fired when the list is generated during a request, and the script is saved through a queued job, respectively.
 
 You can [add a Listener](https://laravel.com/docs/events#registering-events-and-listeners) to dispatch an email or a Slack notification.
+
+## Excluding / Including files from `composer.json`
+
+You can have better control on what packages to preload, and which files to exclude or include from the list.
+
+If your `composer.json` file, use the `extra.preload.exclude` key with the package name, and the paths of the files. These strings will be fed to the underlying Symfony Finder instance.
+
+Using `true` will exclude all files from the package name. 
+
+```json
+{
+    "extra": {
+        "preload": {
+            "exclude": {
+                "laragear/meta": ["src/Cache/*", "resources/views"],
+                "charlesdp/builder": true
+            }
+        }
+    }
+}
+```
 
 ## Laravel Octane Compatibility
 
