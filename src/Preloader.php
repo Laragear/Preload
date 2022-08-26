@@ -29,7 +29,7 @@ class Preloader
     /**
      * Create a new Preload instance.
      *
-     * @param  \Illuminate\Contracts\Config\Repository  config
+     * @param  \Illuminate\Contracts\Config\Repository  $config
      * @param  \Laragear\Preload\Opcache  $opcache
      * @param  \Laragear\Preload\Lister\Lister  $lister
      * @param  \Laragear\Preload\Compiler\Compiler  $compiler

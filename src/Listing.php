@@ -10,16 +10,16 @@ class Listing
     /**
      * Create a new Listing instance.
      *
-     * @param  \Illuminate\Support\Collection<int,string>  $files
+     * @param  \Illuminate\Support\Collection<int|string,string|string[]>  $files
      * @param  bool  $projectOnly
-     * @param  array<int,\Closure(\Symfony\Component\Finder\Finder):void>  $exclude
-     * @param  array<int,\Closure(\Symfony\Component\Finder\Finder):void>  $append
+     * @param  (\Closure(\Symfony\Component\Finder\Finder):void)[]  $exclude
+     * @param  (\Closure(\Symfony\Component\Finder\Finder):void)[]  $append
      * @param  int  $excludeCount
      * @param  int  $appendCount
      * @param  int  $memory
      * @param  string  $path
      * @param  \Illuminate\Support\Stringable|null  $output
-     * @param  array<int,string>  $opcache
+     * @param  array{int:string}  $opcache
      */
     public function __construct(
         public Collection $files,
