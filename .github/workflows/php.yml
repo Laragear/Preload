@@ -97,8 +97,6 @@ jobs:
 
       - name: "Install dependencies"
         uses: "ramsey/composer-install@v2"
-        with:
-          php-version: "latest"
 
       - name: "Execute static analysis"
         run: "composer exec -- phpstan analyze -l 5 src/"
