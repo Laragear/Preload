@@ -35,10 +35,8 @@ jobs:
       - name: "Checkout code"
         uses: "actions/checkout@v3"
 
-      - name: "Install dependencies"
-        uses: "ramsey/composer-install@v2"
-        with:
-          dependency-versions: "highest"
+      - name: "Validate Composer configuration"
+        run: "composer validate --strict"
 
       - name: "Check source code for syntax errors"
         run: "composer exec -- parallel-lint src/"
@@ -96,17 +94,6 @@ jobs:
 
       - name: "Checkout code"
         uses: "actions/checkout@v3"
-
-      - name: "Validate Composer configuration"
-        run: "composer validate --strict"
-
-      - name: "Install dependencies"
-        uses: "ramsey/composer-install@v2"
-        with:
-          dependency-versions: "${{ matrix.dependencies }}"
-
-      - name: "Execute unit tests"
-        run: "composer run-script test"
 
       - name: "Execute static analysis"
         run: "composer exec -- phpstan analyze -l 5 src/"
