@@ -14,7 +14,7 @@ class Condition
      * Create a new Condition instance.
      *
      * @param  \Illuminate\Contracts\Foundation\Application  $app
-     * @param  \Closure(\Illuminate\Http\Request, \Symfony\Component\HttpFoundation\Response, array):bool  $callback
+     * @param  \Closure  $callback
      */
     public function __construct(protected Application $app, protected Closure $callback)
     {

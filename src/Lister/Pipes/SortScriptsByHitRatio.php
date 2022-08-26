@@ -16,7 +16,6 @@ class SortScriptsByHitRatio
      */
     public function handle(Listing $listing, Closure $next): Listing
     {
-        // @phpstan-ignore-next-line
         $listing->files = $listing->files->sortByDesc(static function (array $file): array {
             return [$file['hits'], $file['last_used_timestamp']];
         });

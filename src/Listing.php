@@ -19,7 +19,7 @@ class Listing
      * @param  int  $memory
      * @param  string  $path
      * @param  \Illuminate\Support\Stringable|null  $output
-     * @param  array{int:string}  $opcache
+     * @param  string[]  $opcache
      */
     public function __construct(
         public Collection $files,
