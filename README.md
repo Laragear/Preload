@@ -41,10 +41,14 @@ Opcache preloading stores in memory a given list of files when the PHP process s
 This package generates a preload file with the most accessed files of your application. Once done, you can point the generated list into your `php.ini`:
 
 ```ini
+opcache.preload_user = 'www-data'
 opcache.preload = 'www/app/preload.php';
 ```
 
 After that, the next time PHP starts, this list of files will be preloaded automatically.
+
+> **Note**
+> If you're behind 
 
 ## Usage
 
