@@ -48,7 +48,7 @@ opcache.preload = 'www/app/preload.php';
 After that, the next time PHP starts, this list of files will be preloaded automatically.
 
 > **Note**
-> If you're behind 
+> If you're behind a shared server, preloading may be not available for your application. Normally, shared servers also share the same PHP process, which configuration (`php.ini`) is not available for configuration. Check your server if you're not sure if Laragear Preload should be installed.
 
 ## Usage
 
