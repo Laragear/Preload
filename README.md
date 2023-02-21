@@ -32,11 +32,11 @@ composer require laragear/preload
 
 > This package doesn't require the `ext-zend-opcache` extension to install. Just be sure to have it [enabled in your deployment server](https://www.php.net/manual/en/book.opcache.php).
 
-## What is Preloading? What does this?
+## What is Preloading? Does it make my app FAST?
 
-By default, PHP needs to read, interpret and compile each requested file in your project. When Opcache is enabled, it will keep interpreted files in memory to avoid reading them again from the file system.
+PHP interpreter needs to read and compile each requested file in your project. When Opcache is enabled, it will keep interpreted files in memory instead of reading them again from the file system, which is miles faster.
 
-Opcache preloading stores in memory a given list of files when the PHP process starts, before normal execution. This makes the application _faster_ during the first requests, as these files to read are already in memory. With JIT, these files are also compiled into byte-code.
+Opcache's Preloading allows to store in memory a given list of files when the PHP process starts, before normal execution. This makes the application _faster_ during the first requests, as these files to read are already in memory. With JIT, these files are also compiled into byte-code and saving another step.
 
 This package generates a preload file with the most accessed files of your application. Once done, you can point the generated list into your `php.ini`:
 
