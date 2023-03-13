@@ -4,6 +4,7 @@ namespace Laragear\Preload\Compiler\Pipes;
 
 use Closure;
 use Laragear\Preload\Listing;
+
 use function number_format;
 
 class UpdateOpcacheConfig

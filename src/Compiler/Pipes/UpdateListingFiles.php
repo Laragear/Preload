@@ -4,6 +4,7 @@ namespace Laragear\Preload\Compiler\Pipes;
 
 use Closure;
 use Laragear\Preload\Listing;
+
 use const PHP_EOL;
 
 class UpdateListingFiles

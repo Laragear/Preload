@@ -7,6 +7,7 @@ use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Support\Facades\File;
 use Laragear\Preload\Exceptions\PreloadException;
 use Laragear\Preload\Listing;
+
 use function now;
 use function realpath;
 

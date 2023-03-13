@@ -115,7 +115,7 @@ foreach (\$files as \$file) {
 
 
 SCRIPT
-                , $script);
+                    , $script);
 
                 return true;
             })

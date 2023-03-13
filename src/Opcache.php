@@ -2,8 +2,9 @@
 
 namespace Laragear\Preload;
 
-use function function_exists;
 use RuntimeException;
+
+use function function_exists;
 
 /**
  * Class Opcache.
