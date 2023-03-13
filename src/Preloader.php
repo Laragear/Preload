@@ -5,10 +5,11 @@ namespace Laragear\Preload;
 use Closure;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Support\Collection;
-use function is_string;
-use function resolve;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+
+use function is_string;
+use function resolve;
 
 class Preloader
 {
@@ -53,7 +54,7 @@ class Preloader
      * @param  \Closure|string  ...$exclude
      * @return void
      */
-    public function exclude(Closure|string ...$exclude): void
+    public function exclude(Closure | string ...$exclude): void
     {
         $this->exclude = $this->normalizeListing($exclude);
     }
@@ -64,7 +65,7 @@ class Preloader
      * @param  \Closure|string  ...$append
      * @return void
      */
-    public function append(Closure|string ...$append): void
+    public function append(Closure | string ...$append): void
     {
         $this->append = $this->normalizeListing($append);
     }

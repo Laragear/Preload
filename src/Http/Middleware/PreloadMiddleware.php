@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\Config;
 use Laragear\Preload\Condition;
 use Laragear\Preload\Facades\Preload;
 use Laragear\Preload\Jobs\StorePreloadScript;
-use function resolve;
 use Symfony\Component\HttpFoundation\Response;
+
+use function resolve;
 
 class PreloadMiddleware
 {

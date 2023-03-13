@@ -4,6 +4,7 @@ namespace Laragear\Preload\Lister\Pipes;
 
 use Closure;
 use Laragear\Preload\Listing;
+
 use function round;
 
 class CutListByMemoryLimit
