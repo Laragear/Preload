@@ -61,6 +61,10 @@ class Condition
             // Increment the count by one. If it doesn't exist, we will start with 1.
             $count = $cache->store($options['store'])->increment($options['key']);
 
+            if (empty($count)) {
+                $cache->store($options['store'])->set($options['key'], 1);
+            }
+
             // If the count is not equal to the number of hits, bail out.
             if ($count !== $options['hits']) {
                 return false;
