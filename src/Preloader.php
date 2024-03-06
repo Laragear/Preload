@@ -45,7 +45,7 @@ class Preloader
      *
      * @param  (\Closure(\Symfony\Component\Finder\Finder):void)|string  ...$exclude
      */
-    public function exclude(string ...$exclude): void
+    public function exclude(Closure|string ...$exclude): void
     {
         $this->exclude = $this->normalizeListing($exclude);
     }
@@ -55,7 +55,7 @@ class Preloader
      *
      * @param  (\Closure(\Symfony\Component\Finder\Finder):void)|string  ...$append
      */
-    public function append(Closure | string ...$append): void
+    public function append(Closure|string ...$append): void
     {
         $this->append = $this->normalizeListing($append);
     }

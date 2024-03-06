@@ -23,7 +23,7 @@
     "require": {
         "php": "^8.1",
         "ext-json": "*",
-        "symfony/finder": "7.*",
+        "symfony/finder": "6.*|7.*",
         "illuminate/config": "10.*|11.*",
         "illuminate/console": "10.*|11.*",
         "illuminate/contracts": "10.*|11.*",

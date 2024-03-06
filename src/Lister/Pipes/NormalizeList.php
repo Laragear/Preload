@@ -12,7 +12,6 @@ class NormalizeList
      */
     public function handle(Listing $listing, Closure $next): Listing
     {
-        // @phpstan-ignore-next-line
         $listing->files = $listing->files->keys();
 
         return $next($listing);

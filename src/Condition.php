@@ -12,8 +12,6 @@ class Condition
 {
     /**
      * Create a new Condition instance.
-     *
-     * @param  \Closure(\Illuminate\Http\Request, \Symfony\Component\HttpFoundation\Response, array):bool  $callback
      */
     public function __construct(protected ApplicationContract $app, protected Closure $callback)
     {
@@ -22,8 +20,6 @@ class Condition
 
     /**
      * Use a callback for the condition.
-     *
-     * @param  \Closure(\Illuminate\Http\Request, \Symfony\Component\HttpFoundation\Response, array):bool  $callback
      */
     public function use(Closure $callback): void
     {
@@ -46,8 +42,6 @@ class Condition
      * Returns a condition callback based on requests count.
      *
      * Ensure your 'condition' array contains a 'store', 'key' and 'hits' keys.
-     *
-     * @return \Closure(array{int, mixed}, \Illuminate\Contracts\Cache\Factory):bool
      */
     public static function countCondition(): Closure
     {
