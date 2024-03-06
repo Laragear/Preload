@@ -17,15 +17,11 @@ class StorePreloadScript implements ShouldQueue, ShouldBeUnique, ShouldBeUniqueU
 
     /**
      * Name of the overlap key to handle job uniqueness.
-     *
-     * @var string
      */
     public const OVERLAP_KEY = 'write_preload_script';
 
     /**
      * Create a new job instance.
-     *
-     * @param  \Laragear\Preload\Listing  $listing
      */
     public function __construct(public Listing $listing)
     {
@@ -34,9 +30,6 @@ class StorePreloadScript implements ShouldQueue, ShouldBeUnique, ShouldBeUniqueU
 
     /**
      * Execute the job.
-     *
-     * @param  \Laragear\Preload\Preloader  $preload
-     * @return void
      */
     public function handle(Preloader $preload): void
     {

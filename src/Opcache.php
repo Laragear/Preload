@@ -17,8 +17,6 @@ class Opcache
 {
     /**
      * Here we will save the Opcache status instead of retrieving it every time.
-     *
-     * @var array|false
      */
     protected array|false $status;
 
@@ -26,8 +24,6 @@ class Opcache
      * Get status information about the cache.
      *
      * @see https://www.php.net/manual/en/function.opcache-get-status.php
-     *
-     * @return array
      */
     public function getStatus(): array
     {
@@ -42,8 +38,6 @@ class Opcache
 
     /**
      * Returns if Opcache is enabled.
-     *
-     * @return bool
      */
     public function isEnabled(): bool
     {
@@ -52,8 +46,6 @@ class Opcache
 
     /**
      * Returns if Opcache is disabled.
-     *
-     * @return bool
      */
     public function isDisabled(): bool
     {
@@ -62,8 +54,6 @@ class Opcache
 
     /**
      * Returns the scripts used by Opcache.
-     *
-     * @return array
      */
     public function getScripts(): array
     {
@@ -72,8 +62,6 @@ class Opcache
 
     /**
      * Returns the memory usage of Opcache.
-     *
-     * @return array
      */
     public function getMemoryUsage(): array
     {
@@ -82,8 +70,6 @@ class Opcache
 
     /**
      * Return statistics of Opcache.
-     *
-     * @return array
      */
     public function getStatistics(): array
     {
@@ -92,8 +78,6 @@ class Opcache
 
     /**
      * Returns the number of scripts cached.
-     *
-     * @return int
      */
     public function getNumberCachedScripts(): int
     {
@@ -102,8 +86,6 @@ class Opcache
 
     /**
      * Check if Opcache has any cached script.
-     *
-     * @return bool
      */
     public function cachedScriptsFilled(): bool
     {
@@ -112,8 +94,6 @@ class Opcache
 
     /**
      * Check if Opcache has no cached scripts.
-     *
-     * @return bool
      */
     public function cachedScriptsEmpty(): bool
     {
@@ -122,8 +102,6 @@ class Opcache
 
     /**
      * Returns the number of hits in Opcache.
-     *
-     * @return int
      */
     public function getHits(): int
     {

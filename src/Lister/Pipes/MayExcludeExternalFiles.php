@@ -10,8 +10,6 @@ class MayExcludeExternalFiles
 {
     /**
      * Create a new pipe instance.
-     *
-     * @param  \Laragear\Preload\Preloader  $preload
      */
     public function __construct(protected Preloader $preload)
     {
@@ -20,10 +18,6 @@ class MayExcludeExternalFiles
 
     /**
      * Handle the incoming preload listing.
-     *
-     * @param  \Laragear\Preload\Listing  $listing
-     * @param  \Closure  $next
-     * @return \Laragear\Preload\Listing
      */
     public function handle(Listing $listing, Closure $next): Listing
     {

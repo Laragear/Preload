@@ -11,10 +11,6 @@ class UpdateOpcacheConfig
 {
     /**
      * Handle the script generation.
-     *
-     * @param  \Laragear\Preload\Listing  $listing
-     * @param  \Closure  $next
-     * @return Listing
      */
     public function handle(Listing $listing, Closure $next): Listing
     {
@@ -25,9 +21,6 @@ class UpdateOpcacheConfig
 
     /**
      * Returns a list of replaceable string with Opcache data.
-     *
-     * @param  array  $opcache
-     * @return array
      */
     protected function opcacheConfig(array $opcache): array
     {

@@ -5,7 +5,6 @@ namespace Laragear\Preload\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Filesystem\Filesystem;
-use JetBrains\PhpStorm\Pure;
 use Laragear\Preload\Preloader;
 
 class Placeholder extends Command
@@ -33,10 +32,6 @@ class Placeholder extends Command
 
     /**
      * Execute the console command.
-     *
-     * @param  \Illuminate\Filesystem\Filesystem  $file
-     * @param  \Illuminate\Contracts\Config\Repository  $config
-     * @return void
      */
     public function handle(Filesystem $file, ConfigContract $config): void
     {
@@ -66,12 +61,7 @@ class Placeholder extends Command
 
     /**
      * Check if the placeholder file already exists (and it's the placeholder).
-     *
-     * @param  \Illuminate\Filesystem\Filesystem  $file
-     * @param  mixed  $path
-     * @return bool
      */
-    #[Pure]
     protected function isPlaceholder(Filesystem $file, mixed $path): bool
     {
         return $file->hash($path) === $file->hash(Preloader::PLACEHOLDER);

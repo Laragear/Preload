@@ -21,8 +21,6 @@ class Preload extends Facade
 {
     /**
      * Get the registered name of the component.
-     *
-     * @return string
      */
     protected static function getFacadeAccessor(): string
     {
@@ -33,7 +31,6 @@ class Preload extends Facade
      * Determine if the preload list should be generated using a custom condition.
      *
      * @param  \Closure(\Illuminate\Http\Request, \Symfony\Component\HttpFoundation\Response, array):bool  $condition
-     * @return void
      */
     public static function condition(Closure $condition): void
     {

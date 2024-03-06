@@ -11,8 +11,6 @@ class ListGenerated
 
     /**
      * Create a new event instance.
-     *
-     * @param  \Laragear\Preload\Listing  $listing
      */
     public function __construct(public Listing $listing)
     {

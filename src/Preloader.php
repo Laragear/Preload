@@ -15,25 +15,17 @@ class Preloader
 {
     /**
      * The location of the preload script stub.
-     *
-     * @var string
      */
     public const STUB = __DIR__.'/../stubs/preload.php.stub';
 
     /**
      * The location of the placeholder preload stub.
-     *
-     * @var string
      */
     public const PLACEHOLDER = __DIR__.'/../stubs/preload.php.placeholder.stub';
 
     /**
      * Create a new Preload instance.
      *
-     * @param  \Illuminate\Contracts\Config\Repository  $config
-     * @param  \Laragear\Preload\Opcache  $opcache
-     * @param  \Laragear\Preload\Lister\Lister  $lister
-     * @param  \Laragear\Preload\Compiler\Compiler  $compiler
      * @param  array<string|\Closure(\Symfony\Component\Finder\Finder):void>  $append
      * @param  array<string|\Closure(\Symfony\Component\Finder\Finder):void>  $exclude
      */
@@ -51,10 +43,9 @@ class Preloader
     /**
      * Exclude files from the given paths.
      *
-     * @param  \Closure|string  ...$exclude
-     * @return void
+     * @param  (\Closure(\Symfony\Component\Finder\Finder):void)|string  ...$exclude
      */
-    public function exclude(Closure | string ...$exclude): void
+    public function exclude(string ...$exclude): void
     {
         $this->exclude = $this->normalizeListing($exclude);
     }
@@ -62,8 +53,7 @@ class Preloader
     /**
      * Append files from the given paths.
      *
-     * @param  \Closure|string  ...$append
-     * @return void
+     * @param  (\Closure(\Symfony\Component\Finder\Finder):void)|string  ...$append
      */
     public function append(Closure | string ...$append): void
     {
@@ -73,8 +63,8 @@ class Preloader
     /**
      * Normalize the listing from the user.
      *
-     * @param  array<string|\Closure>  $listing
-     * @return \Closure[]
+     * @param  array<string|(\Closure(\Symfony\Component\Finder\Finder):void)>  $listing
+     * @return (\Closure(\Symfony\Component\Finder\Finder):void)[]
      */
     protected function normalizeListing(array $listing): array
     {
@@ -91,8 +81,6 @@ class Preloader
 
     /**
      * Creates a new list.
-     *
-     * @return \Laragear\Preload\Listing
      */
     public function list(): Listing
     {
@@ -106,9 +94,6 @@ class Preloader
 
     /**
      * Writes a listing to the filesystem.
-     *
-     * @param  \Laragear\Preload\Listing|null  $listing
-     * @return \Laragear\Preload\Listing
      */
     public function generate(Listing $listing = null): Listing
     {
@@ -118,7 +103,7 @@ class Preloader
     /**
      * Return an array of the files from the Finder.
      *
-     * @param  \Closure  $callback
+     * @param  \Closure(\Symfony\Component\Finder\Finder):void  $callback
      * @return \Illuminate\Support\Collection<int, string>
      */
     public function getFilesFromFinder(Closure $callback): Collection

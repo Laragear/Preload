@@ -10,8 +10,6 @@ class LoadPreloadConfig
 {
     /**
      * Create a new pipe instance.
-     *
-     * @param  \Illuminate\Contracts\Config\Repository  $config
      */
     public function __construct(protected ConfigContract $config)
     {
@@ -20,10 +18,6 @@ class LoadPreloadConfig
 
     /**
      * Handle the incoming preload listing.
-     *
-     * @param  \Laragear\Preload\Listing  $listing
-     * @param  \Closure  $next
-     * @return \Laragear\Preload\Listing
      */
     public function handle(Listing $listing, Closure $next): Listing
     {

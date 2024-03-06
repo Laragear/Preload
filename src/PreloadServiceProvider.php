@@ -2,9 +2,9 @@
 
 namespace Laragear\Preload;
 
-use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Contracts\Http\Kernel as HttpContract;
 use Illuminate\Support\ServiceProvider;
 use Laragear\Preload\Http\Middleware\PreloadMiddleware;
 
@@ -12,15 +12,11 @@ class PreloadServiceProvider extends ServiceProvider
 {
     /**
      * Location of the package config.
-     *
-     * @var string
      */
     public const CONFIG = __DIR__.'/../config/preload.php';
 
     /**
      * Register the application services.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -35,12 +31,8 @@ class PreloadServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap the application services.
-     *
-     * @param  \Illuminate\Contracts\Config\Repository  $config
-     * @param  \Illuminate\Contracts\Http\Kernel  $kernel
-     * @return void
      */
-    public function boot(Repository $config, Kernel $kernel): void
+    public function boot(ConfigContract $config, HttpContract $kernel): void
     {
         // We will only register the middleware if not Running Unit Tests
         if ($this->shouldRun($config)) {
@@ -62,7 +54,7 @@ class PreloadServiceProvider extends ServiceProvider
      *
      * @codeCoverageIgnore
      */
-    protected function shouldRun(Repository $config): bool
+    protected function shouldRun(ConfigContract $config): bool
     {
         // If it's null run only on production, otherwise the developer decides.
         return $config->get('preload.enabled') ?? $this->app->environment('production');

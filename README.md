@@ -18,8 +18,7 @@ Your support allows me to keep this package free, up-to-date and maintainable. A
 
 ## Requirements
 
-* PHP 8.0 or later
-* Laravel 9, 10 or later
+* Laravel 10 or later
 * [Opcache & Preloading enabled](https://www.php.net/manual/en/book.opcache.php) (`ext-zend-opcache`).
 
 ## Installation
@@ -30,6 +29,8 @@ Require this using Composer into your project
 composer require laragear/preload
 ```
 
+> [!NOTE]
+>
 > This package doesn't require the `ext-zend-opcache` extension to install. Just be sure to have it [enabled in your deployment server](https://www.php.net/manual/en/book.opcache.php).
 
 ## What is Preloading? Does it make my app FAST?
@@ -47,7 +48,8 @@ opcache.preload = 'www/app/preload.php';
 
 After that, the next time PHP starts, this list of files will be preloaded automatically.
 
-> **Note**
+> [!NOTE]
+> 
 > If you're behind a shared server, preloading may be not available for your application. Normally, shared servers also share the same PHP process, which configuration (`php.ini`) is not available for configuration. Check your server if you're not sure if Laragear Preload should be installed.
 
 ## Usage
@@ -66,6 +68,8 @@ php artisan preload:placeholder
 # opcache.preload = '/www/app/preload.php';
 ```
 
+> [!IMPORTANT]
+>
 > The command won't replace the file if it exists. You can force the operation using `--force`. 
 
 Add the preload file path in your `php.ini`:
@@ -168,6 +172,8 @@ The memory limit, in MegaBytes, of the List. Once this threshold is reached, no 
 
 For most applications, 32MB is fine, but you may fine-tune it for your project specifically.
 
+> [!NOTE]
+>
 > This is not Opcache memory limit, as its handled separately.
 
 #### Job configuration
@@ -198,6 +204,8 @@ return [
 
 By default, the script is saved in your project root path, but you can change the filename and path to save it as long PHP has permissions to write on it. Whatever you place it, never do it in a public/accessible directory, like `public` or `storage/app/public`.
 
+> [!IMPORTANT]
+>
 > Double-check your file permissions to avoid failures on production when reading the file.
 
 #### Method

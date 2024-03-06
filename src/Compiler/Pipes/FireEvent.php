@@ -11,8 +11,6 @@ class FireEvent
 {
     /**
      * Create a new pipe instance.
-     *
-     * @param  \Illuminate\Contracts\Events\Dispatcher  $dispatcher
      */
     public function __construct(protected Dispatcher $dispatcher)
     {
@@ -21,10 +19,6 @@ class FireEvent
 
     /**
      * Handle the script generation.
-     *
-     * @param  \Laragear\Preload\Listing  $listing
-     * @param  \Closure  $next
-     * @return Listing
      */
     public function handle(Listing $listing, Closure $next): Listing
     {

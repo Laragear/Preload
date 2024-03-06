@@ -11,8 +11,6 @@ class WritePreloadFile
 {
     /**
      * Create a new pipe instance.
-     *
-     * @param  \Illuminate\Filesystem\Filesystem  $files
      */
     public function __construct(protected Filesystem $files)
     {
@@ -21,10 +19,6 @@ class WritePreloadFile
 
     /**
      * Handle the script generation.
-     *
-     * @param  \Laragear\Preload\Listing  $listing
-     * @param  \Closure  $next
-     * @return Listing
      */
     public function handle(Listing $listing, Closure $next): Listing
     {

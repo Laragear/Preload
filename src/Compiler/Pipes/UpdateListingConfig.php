@@ -10,8 +10,6 @@ class UpdateListingConfig
 {
     /**
      * Create a new pipe instance.
-     *
-     * @param  \Illuminate\Contracts\Config\Repository  $config
      */
     public function __construct(protected ConfigContract $config)
     {
@@ -20,10 +18,6 @@ class UpdateListingConfig
 
     /**
      * Handle the script generation.
-     *
-     * @param  \Laragear\Preload\Listing  $listing
-     * @param  \Closure  $next
-     * @return Listing
      */
     public function handle(Listing $listing, Closure $next): Listing
     {
@@ -36,9 +30,6 @@ class UpdateListingConfig
 
     /**
      * Returns a list of replaceable string with Preload data.
-     *
-     * @param  \Laragear\Preload\Listing  $listing
-     * @return array
      */
     protected function listConfig(Listing $listing): array
     {

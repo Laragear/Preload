@@ -11,10 +11,6 @@ class CutListByMemoryLimit
 {
     /**
      * Handle the incoming preload listing.
-     *
-     * @param  \Laragear\Preload\Listing  $listing
-     * @param  \Closure  $next
-     * @return \Laragear\Preload\Listing
      */
     public function handle(Listing $listing, Closure $next): Listing
     {
@@ -27,9 +23,6 @@ class CutListByMemoryLimit
 
     /**
      * Cut the listing until the memory threshold is set.
-     *
-     * @param  Listing  $listing
-     * @return void
      */
     protected function cutList(Listing $listing): void
     {

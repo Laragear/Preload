@@ -4,7 +4,7 @@ namespace Laragear\Preload;
 
 use Closure;
 use Illuminate\Contracts\Cache\Factory as CacheContract;
-use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -13,10 +13,9 @@ class Condition
     /**
      * Create a new Condition instance.
      *
-     * @param  \Illuminate\Contracts\Foundation\Application  $app
-     * @param  \Closure  $callback
+     * @param  \Closure(\Illuminate\Http\Request, \Symfony\Component\HttpFoundation\Response, array):bool  $callback
      */
-    public function __construct(protected Application $app, protected Closure $callback)
+    public function __construct(protected ApplicationContract $app, protected Closure $callback)
     {
         //
     }
@@ -25,7 +24,6 @@ class Condition
      * Use a callback for the condition.
      *
      * @param  \Closure(\Illuminate\Http\Request, \Symfony\Component\HttpFoundation\Response, array):bool  $callback
-     * @return void
      */
     public function use(Closure $callback): void
     {
@@ -34,10 +32,6 @@ class Condition
 
     /**
      * Check if the script should be generated.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Symfony\Component\HttpFoundation\Response  $response
-     * @return bool
      */
     public function shouldGenerate(Request $request, Response $response): bool
     {

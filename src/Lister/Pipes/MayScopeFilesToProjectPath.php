@@ -10,10 +10,6 @@ class MayScopeFilesToProjectPath
 {
     /**
      * Handle the incoming preload listing.
-     *
-     * @param  \Laragear\Preload\Listing  $listing
-     * @param  \Closure  $next
-     * @return \Laragear\Preload\Listing
      */
     public function handle(Listing $listing, Closure $next): Listing
     {
@@ -26,11 +22,8 @@ class MayScopeFilesToProjectPath
 
     /**
      * Removes all files that are not inside the project base path.
-     *
-     * @param  \Laragear\Preload\Listing  $listing
-     * @return void
      */
-    protected function removeNonProjectFiles(Listing $listing)
+    protected function removeNonProjectFiles(Listing $listing): void
     {
         $listing->files = $listing->files->filter(static function (array $file, string $key): bool {
             return Str::startsWith($key, base_path());
