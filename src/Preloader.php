@@ -55,7 +55,7 @@ class Preloader
      *
      * @param  (\Closure(\Symfony\Component\Finder\Finder):void)|string  ...$append
      */
-    public function append(Closure | string ...$append): void
+    public function append(Closure|string ...$append): void
     {
         $this->append = $this->normalizeListing($append);
     }
