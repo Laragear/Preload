@@ -95,7 +95,7 @@ class Preloader
     /**
      * Writes a listing to the filesystem.
      */
-    public function generate(Listing $listing = null): Listing
+    public function generate(?Listing $listing = null): Listing
     {
         return $this->compiler->send($listing)->thenReturn();
     }
