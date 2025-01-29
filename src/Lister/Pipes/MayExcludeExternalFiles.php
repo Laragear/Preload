@@ -26,7 +26,6 @@ class MayExcludeExternalFiles
 
             $listing->excludeCount += $excluded->count();
 
-            // @phpstan-ignore-next-line
             $listing->files = $listing->files->diffKeys($excluded);
         }
 

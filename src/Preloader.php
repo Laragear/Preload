@@ -104,7 +104,7 @@ class Preloader
      * Return an array of the files from the Finder.
      *
      * @param  \Closure(\Symfony\Component\Finder\Finder):void  $callback
-     * @return \Illuminate\Support\Collection<int, string>
+     * @return \Illuminate\Support\Collection<array-key, string>
      */
     public function getFilesFromFinder(Closure $callback): Collection
     {

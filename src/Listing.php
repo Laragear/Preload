@@ -13,7 +13,7 @@ class Listing
      * @param  \Illuminate\Support\Collection<array-key,string|string[]>  $files
      * @param  (\Closure(\Symfony\Component\Finder\Finder):void)[]  $exclude
      * @param  (\Closure(\Symfony\Component\Finder\Finder):void)[]  $append
-     * @param  string[]  $opcache
+     * @param  string[]|array[]  $opcache
      */
     public function __construct(
         public Collection $files,
