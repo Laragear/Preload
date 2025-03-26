@@ -5,7 +5,6 @@ namespace Laragear\Preload\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Filesystem\Filesystem;
-use Laragear\Preload\Preloader;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 /**
@@ -44,6 +43,7 @@ class Stub extends Command
 
         if ($file->exists($path)) {
             $this->info('A preload script file already exists.');
+
             return;
         }
 
@@ -54,7 +54,6 @@ class Stub extends Command
 
 STUB
         );
-
 
         $this->info("Stub copied at [$path].");
         $this->newLine();

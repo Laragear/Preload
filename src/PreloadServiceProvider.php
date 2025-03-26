@@ -2,7 +2,6 @@
 
 namespace Laragear\Preload;
 
-use Illuminate\Contracts\Cache\Factory as CacheContract;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Contracts\Foundation\Application;

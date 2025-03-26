@@ -7,7 +7,7 @@ use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Support\DateFactory;
 use Laragear\Preload\Listing;
 use Laragear\Preload\Preloader;
-use function now;
+
 use const DIRECTORY_SEPARATOR;
 
 /**
@@ -49,7 +49,7 @@ class SetStatistics
             ],
             [
                 $this->date->now()->toDateTimeString(),
-                $this->config->get('preload.path') . DIRECTORY_SEPARATOR . Preloader::NAME_LIST,
+                $this->config->get('preload.path').DIRECTORY_SEPARATOR.Preloader::NAME_LIST,
                 $this->config->get('preload.use_require') ? 'require_once' : 'opcache_compile_file',
                 $listing->includeCount,
                 $listing->excludeCount,

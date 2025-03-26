@@ -27,7 +27,7 @@ class EnsureDirectoryExists
 
         $this->files->ensureDirectoryExists($path);
 
-        if (!$this->files->isWritable($path)) {
+        if (! $this->files->isWritable($path)) {
             throw new PreloadException("The path [$path] is not writable.");
         }
 

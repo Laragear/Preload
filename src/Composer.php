@@ -3,6 +3,7 @@
 namespace Laragear\Preload;
 
 use Composer\InstalledVersions;
+
 use function realpath;
 
 /**

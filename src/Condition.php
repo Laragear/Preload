@@ -3,11 +3,8 @@
 namespace Laragear\Preload;
 
 use Closure;
-use Illuminate\Contracts\Cache\Factory as CacheContract;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
-use Illuminate\Http\Request;
 use Illuminate\Support\Lottery;
-use Symfony\Component\HttpFoundation\Response;
 
 class Condition
 {

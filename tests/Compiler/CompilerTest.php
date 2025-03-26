@@ -8,7 +8,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\DateFactory;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Stringable;
 use Laragear\Preload\Compiler\Compiler;
 use Laragear\Preload\Compiler\Pipes\EnsureDirectoryExists;
@@ -25,16 +24,15 @@ use Laragear\Preload\Events\PreloadGenerated;
 use Laragear\Preload\Exceptions\PreloadException;
 use Laragear\Preload\Facades\Preload;
 use Laragear\Preload\Listing;
-use Laragear\Preload\Opcache;
 use Laragear\Preload\Preloader;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
-use ReflectionClass;
-use ReflectionObject;
 use ReflectionProperty;
 use Tests\MocksOpcache;
 use Tests\TestCase;
+
 use function realpath;
+
 use const DIRECTORY_SEPARATOR;
 use const PHP_EOL;
 
@@ -96,7 +94,7 @@ class CompilerTest extends TestCase
             $mock->expects('isWritable')->with($path)->andReturnTrue();
         });
 
-        $this->app->make(EnsureDirectoryExists::class)->handle(new Listing(), fn($listing) => $listing);
+        $this->app->make(EnsureDirectoryExists::class)->handle(new Listing(), fn ($listing) => $listing);
     }
 
     public function test_ensures_directory_exists_throws_if_not_writable(): void
@@ -113,7 +111,7 @@ class CompilerTest extends TestCase
         $this->expectException(PreloadException::class);
         $this->expectExceptionMessage("The path [$path] is not writable.");
 
-        $pipe->handle(new Listing(), fn($listing) => $listing);
+        $pipe->handle(new Listing(), fn ($listing) => $listing);
     }
 
     public function test_write_list_file(): void
@@ -128,7 +126,7 @@ class CompilerTest extends TestCase
         $listing = new Listing(files: new Collection(['foo', 'bar']));
 
         $this->app->make(WriteListFile::class)
-            ->handle($listing, fn($listing) => $listing);
+            ->handle($listing, fn ($listing) => $listing);
 
         static::assertEmpty($listing->files);
     }
@@ -144,13 +142,13 @@ class CompilerTest extends TestCase
         $this->expectException(PreloadException::class);
         $this->expectExceptionMessage("Couldn't write list file to [$path].");
 
-        $pipe->handle(new Listing(files: new Collection(['foo', 'bar'])), fn($listing) => $listing);
+        $pipe->handle(new Listing(files: new Collection(['foo', 'bar'])), fn ($listing) => $listing);
     }
 
     public function test_load_statistics_stub(): void
     {
         $listing = $this->app->make(LoadStatisticsStub::class)
-            ->handle(new Listing(), fn($listing) => $listing);
+            ->handle(new Listing(), fn ($listing) => $listing);
 
         static::assertStringEqualsFile(Preloader::STUB_STATISTICS, $listing->statistics->toString());
     }
@@ -167,7 +165,7 @@ class CompilerTest extends TestCase
         $this->expectException(PreloadException::class);
         $this->expectExceptionMessage('Cannot read the stub "'.Preloader::STUB_STATISTICS.'" contents.');
 
-        $pipe->handle(new Listing(), fn($listing) => $listing);
+        $pipe->handle(new Listing(), fn ($listing) => $listing);
     }
 
     public function test_set_statistics(): void
@@ -186,7 +184,7 @@ STUB;
 
         $listing = $this->app->make(SetStatistics::class)
             ->handle(new Listing(statistics: new Stringable($replaceable), includeCount: 1, excludeCount: 4),
-                fn($listing) => $listing);
+                fn ($listing) => $listing);
 
         static::assertSame(<<<'EXPECTED'
 2020-01-01 00:00:00
@@ -210,12 +208,12 @@ EXPECTED
     #[DataProvider('provideUseRequire')]
     public function test_set_statistics_with_config(bool $config, string $expected): void
     {
-        $listing = new Listing(statistics: new Stringable("@mechanism"));
+        $listing = new Listing(statistics: new Stringable('@mechanism'));
 
         $this->app->make('config')->set('preload.use_require', $config);
 
         $this->app->make(SetStatistics::class)
-            ->handle($listing, fn($listing) => $listing);
+            ->handle($listing, fn ($listing) => $listing);
 
         static::assertSame($expected, $listing->statistics->toString());
     }
@@ -238,7 +236,7 @@ EXPECTED
         $this->mock(DateFactory::class)->expects('now')->andReturn(Carbon::create(2020));
 
         $this->app->make(SetStatistics::class)
-            ->handle($listing, fn($listing) => $listing);
+            ->handle($listing, fn ($listing) => $listing);
 
         static::assertSame("$replaceable: $expected", $listing->statistics->toString());
     }
@@ -269,7 +267,7 @@ EXPECTED
         );
 
         $this->app->make(SetOpcacheConfig::class)
-            ->handle($listing, fn($listing) => $listing);
+            ->handle($listing, fn ($listing) => $listing);
 
         static::assertSame(<<<'EXPECTED'
 5.0
@@ -279,7 +277,7 @@ EXPECTED
 5.50
 10002
 EXPECTED
-        , $listing->statistics->toString());
+            , $listing->statistics->toString());
     }
 
     public function test_writes_statistics_file(): void
@@ -293,7 +291,7 @@ EXPECTED
         )->andReturnTrue();
 
         $this->app->make(WriteStatisticsFile::class)
-            ->handle(new Listing(statistics: $statistics), fn($listing) => $listing);
+            ->handle(new Listing(statistics: $statistics), fn ($listing) => $listing);
     }
 
     public function test_writes_statistics_file_throws_when_cannot_put(): void
@@ -307,13 +305,13 @@ EXPECTED
         $this->expectException(PreloadException::class);
         $this->expectExceptionMessage("Couldn't write statistics file to [$path].");
 
-        $pipe->handle(new Listing(), fn($listing) => $listing);
+        $pipe->handle(new Listing(), fn ($listing) => $listing);
     }
 
     public function test_load_preload_stub(): void
     {
         $listing = $this->app->make(LoadPreloaderStub::class)
-            ->handle(new Listing(), fn($listing) => $listing);
+            ->handle(new Listing(), fn ($listing) => $listing);
 
         static::assertStringEqualsFile(Preloader::STUB_PRELOAD, $listing->preloader->toString());
     }
@@ -330,7 +328,7 @@ EXPECTED
         $this->expectException(PreloadException::class);
         $this->expectExceptionMessage('Cannot read the stub "'.Preloader::STUB_PRELOAD.'" contents.');
 
-        $pipe->handle(new Listing(), fn($listing) => $listing);
+        $pipe->handle(new Listing(), fn ($listing) => $listing);
     }
 
     public function test_set_preload_config_autoload_as_null(): void
@@ -338,7 +336,7 @@ EXPECTED
         $config = $this->app->make('config');
         $listing = new Listing(preloader: new Stringable('@autoload'));
 
-        $this->app->make(SetPreloadConfig::class)->handle($listing, fn($listing) => $listing);
+        $this->app->make(SetPreloadConfig::class)->handle($listing, fn ($listing) => $listing);
 
         static::assertSame('', $listing->preloader->toString());
     }
@@ -352,7 +350,7 @@ EXPECTED
 
         $config->set('preload.use_require', true);
 
-        $this->app->make(SetPreloadConfig::class)->handle($listing, fn($listing) => $listing);
+        $this->app->make(SetPreloadConfig::class)->handle($listing, fn ($listing) => $listing);
 
         static::assertSame(
             'require_once \''.realpath($config->get('preload.autoloader')).'\';',
@@ -374,16 +372,16 @@ EXPECTED
         $this->expectException(PreloadException::class);
         $this->expectExceptionMessage("Composer Autoloader is missing in [{$config->get('preload.autoload')}].");
 
-        $pipe->handle($listing, fn($listing) => $listing);
+        $pipe->handle($listing, fn ($listing) => $listing);
     }
 
     public function test_set_preload_config_file(): void
     {
         $listing = $this->app->make(SetPreloadConfig::class)
-            ->handle(new Listing(preloader: new Stringable('@file')), fn($listing) => $listing);
+            ->handle(new Listing(preloader: new Stringable('@file')), fn ($listing) => $listing);
 
         static::assertSame(
-            $this->app->make('config')->get('preload.path') . DIRECTORY_SEPARATOR . Preloader::NAME_LIST,
+            $this->app->make('config')->get('preload.path').DIRECTORY_SEPARATOR.Preloader::NAME_LIST,
             $listing->preloader->toString()
         );
     }
@@ -393,7 +391,7 @@ EXPECTED
         $this->app->make('config')->set('preload.ignore_not_found', true);
 
         $listing = $this->app->make(SetPreloadConfig::class)
-            ->handle(new Listing(preloader: new Stringable('@failure')), fn($listing) => $listing);
+            ->handle(new Listing(preloader: new Stringable('@failure')), fn ($listing) => $listing);
 
         static::assertSame('continue;', $listing->preloader->toString());
     }
@@ -403,7 +401,7 @@ EXPECTED
         $this->app->make('config')->set('preload.ignore_not_found', false);
 
         $listing = $this->app->make(SetPreloadConfig::class)
-            ->handle(new Listing(preloader: new Stringable('@failure')), fn($listing) => $listing);
+            ->handle(new Listing(preloader: new Stringable('@failure')), fn ($listing) => $listing);
 
         static::assertSame(
             'throw new \Exception("{$file} does not exist or is unreadable.");',
@@ -418,7 +416,7 @@ EXPECTED
         $this->app->make('config')->set('preload.use_require', true);
 
         $listing = $this->app->make(SetPreloadConfig::class)
-            ->handle(new Listing(preloader: new Stringable('@mechanism')), fn($listing) => $listing);
+            ->handle(new Listing(preloader: new Stringable('@mechanism')), fn ($listing) => $listing);
 
         static::assertSame('require_once $file', $listing->preloader->toString());
     }
@@ -428,7 +426,7 @@ EXPECTED
         $this->app->make('config')->set('preload.use_require', false);
 
         $listing = $this->app->make(SetPreloadConfig::class)
-            ->handle(new Listing(preloader: new Stringable('@mechanism')), fn($listing) => $listing);
+            ->handle(new Listing(preloader: new Stringable('@mechanism')), fn ($listing) => $listing);
 
         static::assertSame('\opcache_compile_file($file)', $listing->preloader->toString());
     }
@@ -444,7 +442,7 @@ EXPECTED
             ->with($path, $preloader, true)
             ->andReturnTrue();
 
-        $listing = $this->app->make(WritePreloaderFile::class)->handle($listing, fn($listing) => $listing);
+        $listing = $this->app->make(WritePreloaderFile::class)->handle($listing, fn ($listing) => $listing);
 
         static::assertEmpty($listing->preloader->toString());
     }
@@ -460,7 +458,7 @@ EXPECTED
         $this->expectException(PreloadException::class);
         $this->expectExceptionMessage("Couldn't write preload script to [$path].");
 
-        $pipe->handle(new Listing(files: new Collection(['foo', 'bar'])), fn($listing) => $listing);
+        $pipe->handle(new Listing(files: new Collection(['foo', 'bar'])), fn ($listing) => $listing);
     }
 
     public function test_fires_event(): void
@@ -469,7 +467,7 @@ EXPECTED
 
         $listing = new Listing();
 
-        $this->app->make(FireEvent::class)->handle($listing, fn($listing) => $listing);
+        $this->app->make(FireEvent::class)->handle($listing, fn ($listing) => $listing);
 
         $event->assertDispatched(PreloadGenerated::class, function (PreloadGenerated $event) use ($listing) {
             static::assertSame($listing, $event->listing);

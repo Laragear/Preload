@@ -10,6 +10,7 @@ use Laragear\Preload\Composer;
 use Laragear\Preload\Exceptions\PreloadException;
 use Laragear\Preload\Listing;
 use Symfony\Component\Finder\Finder;
+
 use function is_bool;
 
 class LoadIncludedAndExcludedLibraries
@@ -34,7 +35,7 @@ class LoadIncludedAndExcludedLibraries
         $libraries = Arr::get($this->files->json($this->app->basePath('composer.json')), 'extra.preload', []);
 
         foreach ($libraries as $library => $preload) {
-            if (!$path = $this->composer->getLibraryPath($library)) {
+            if (! $path = $this->composer->getLibraryPath($library)) {
                 throw new PreloadException("The library [$library] is not installed.");
             }
 
