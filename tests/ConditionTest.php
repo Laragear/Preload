@@ -16,7 +16,7 @@ class ConditionTest extends TestCase
     {
         $cache = $this->app->make('cache');
 
-        $cache->forever('laragear.preload.count', 9999);
+        $cache->forever('laragear.preload.count', 9998);
 
         static::assertFalse(($this->condition())());
 
