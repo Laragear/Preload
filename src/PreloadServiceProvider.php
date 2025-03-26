@@ -27,7 +27,7 @@ class PreloadServiceProvider extends ServiceProvider
 
         $this->app->singleton(Condition::class, static function (Application $app): Condition {
             return new Condition($app, static function (Repository $cache): bool {
-                return $cache->increment('laragear.preload.count') % 1000;
+                return $cache->increment('laragear.preload.count') % 1000 === 0;
             });
         });
     }

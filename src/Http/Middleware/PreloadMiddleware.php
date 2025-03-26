@@ -37,7 +37,7 @@ class PreloadMiddleware
                 'preload.job.queue' => $queue,
             ] = $app->make('config')->getMany(['preload.job.connection', 'preload.job.queue']);
 
-            StorePreloadScript::dispatch($app->make(Preloader::class)->list())
+            StorePreloadScript::dispatch($app->make(Preloader::class)->files())
                 ->onConnection($connection)
                 ->onQueue($queue);
         }

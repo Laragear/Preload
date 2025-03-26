@@ -38,7 +38,7 @@ class PreloadMiddlewareTest extends TestCase
     {
         $bus = Bus::fake();
 
-        $this->mock(Preloader::class)->expects('list')->once()->andReturn($listing = new Listing());
+        $this->mock(Preloader::class)->expects('files')->once()->andReturn($listing = new Listing());
 
         $this->app->afterResolving(Condition::class, static function (Condition $condition) {
             $condition->use(fn () => true);
@@ -62,7 +62,7 @@ class PreloadMiddlewareTest extends TestCase
             'queue' => 'bar',
         ]);
 
-        $this->mock(Preloader::class)->expects('list')->once()->andReturn(new Listing());
+        $this->mock(Preloader::class)->expects('files')->once()->andReturn(new Listing());
         $this->mock(Condition::class)->expects('__invoke')->once()->andReturnTrue();
 
         $this->get('test')->assertOk();
@@ -79,7 +79,7 @@ class PreloadMiddlewareTest extends TestCase
     {
         $bus = Bus::fake();
 
-        $this->mock(Preloader::class)->expects('list')->never();
+        $this->mock(Preloader::class)->expects('files')->never();
 
         $this->mock(Condition::class)
             ->allows('__invoke')
@@ -95,7 +95,7 @@ class PreloadMiddlewareTest extends TestCase
     {
         $bus = Bus::fake();
 
-        $this->mock(Preloader::class)->expects('list')->never();
+        $this->mock(Preloader::class)->expects('files')->never();
         $this->mock(Condition::class)->allows('__invoke')->never();
 
         $this->get('test_failed')->assertNotFound();
