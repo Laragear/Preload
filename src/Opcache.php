@@ -81,42 +81,4 @@ class Opcache
     {
         return $this->getStatus()['opcache_statistics'];
     }
-
-    /**
-     * Returns the number of scripts cached.
-     */
-    public function getNumberCachedScripts(): int
-    {
-        return $this->getStatus()['opcache_statistics']['num_cached_scripts'];
-    }
-
-    /**
-     * Check if Opcache has any cached script.
-     *
-     * @TODO Delete if unused
-     */
-    public function cachedScriptsFilled(): bool
-    {
-        return (bool) $this->getNumberCachedScripts();
-    }
-
-    /**
-     * Check if Opcache has no cached scripts.
-     *
-     * @TODO Delete if unused
-     */
-    public function cachedScriptsEmpty(): bool
-    {
-        return ! $this->cachedScriptsFilled();
-    }
-
-    /**
-     * Returns the number of hits in Opcache.
-     *
-     * @TODO Delete if unused
-     */
-    public function getHits(): int
-    {
-        return $this->getStatus()['opcache_statistics']['hits'];
-    }
 }

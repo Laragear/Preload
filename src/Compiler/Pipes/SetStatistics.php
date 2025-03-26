@@ -38,22 +38,24 @@ class SetStatistics
      */
     protected function listConfig(Listing $listing): array
     {
+        $memory = $this->config->get('preload.memory');
+
         return [
             [
                 '@generated_at',
                 '@output',
                 '@mechanism',
+                '@preloader_memory_limit',
                 '@preloader_included',
                 '@preloader_excluded',
-                '@preloader_memory_limit',
             ],
             [
                 $this->date->now()->toDateTimeString(),
                 $this->config->get('preload.path').DIRECTORY_SEPARATOR.Preloader::NAME_LIST,
                 $this->config->get('preload.use_require') ? 'require_once' : 'opcache_compile_file',
+                $memory ? $memory.'MB' : '(disabled)',
                 $listing->includeCount,
                 $listing->excludeCount,
-                $listing->memory ? $listing->memory.'MB' : '(disabled)',
             ],
         ];
     }

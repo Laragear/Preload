@@ -17,7 +17,6 @@ class Lister extends Pipeline
     protected $pipes = [
         Pipes\LoadOpcacheConfig::class,
         Pipes\LoadAcceleratedFiles::class,
-        Pipes\LoadPreloadConfig::class,
         Pipes\LoadIncludedAndExcludedLibraries::class,
         Pipes\ExcludePreloadVariable::class,
         Pipes\MayScopeFilesToProjectPath::class,

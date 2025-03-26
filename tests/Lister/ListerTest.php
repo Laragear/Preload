@@ -16,7 +16,6 @@ use Laragear\Preload\Lister\Pipes\FireEvent;
 use Laragear\Preload\Lister\Pipes\LoadAcceleratedFiles;
 use Laragear\Preload\Lister\Pipes\LoadIncludedAndExcludedLibraries;
 use Laragear\Preload\Lister\Pipes\LoadOpcacheConfig;
-use Laragear\Preload\Lister\Pipes\LoadPreloadConfig;
 use Laragear\Preload\Lister\Pipes\MayIncludeFiles;
 use Laragear\Preload\Lister\Pipes\MayExcludeFiles;
 use Laragear\Preload\Lister\Pipes\MayScopeFilesToProjectPath;
@@ -42,14 +41,13 @@ class ListerTest extends TestCase
     {
         $lister = $this->lister();
 
-        $pipes = (new ReflectionProperty($lister, 'pipes'));
+        $pipes = new ReflectionProperty($lister, 'pipes');
 
         $pipes->setAccessible(true);
 
         static::assertSame([
             LoadOpcacheConfig::class,
             LoadAcceleratedFiles::class,
-            LoadPreloadConfig::class,
             LoadIncludedAndExcludedLibraries::class,
             ExcludePreloadVariable::class,
             MayScopeFilesToProjectPath::class,
@@ -129,23 +127,6 @@ class ListerTest extends TestCase
         $this->expectExceptionMessage('Opcache has no cached scripts.');
 
         $pipe->handle(new Listing(), fn ($value) => $value);
-    }
-
-    public function test_load_preload_config(): void
-    {
-        $config = $this->app->make('config');
-
-        $config->set('preload.memory', 20);
-
-        $listing = $this->app->make(LoadPreloadConfig::class)->handle(new Listing(), fn ($value) => $value);
-
-        static::assertSame(20, $listing->memory);
-
-        $config->set('preload.memory', 30);
-
-        $listing = $this->app->make(LoadPreloadConfig::class)->handle(new Listing(), fn ($value) => $value);
-
-        static::assertSame(30, $listing->memory);
     }
 
     public function test_includes_and_excludes_packages_from_composer(): void
@@ -305,12 +286,14 @@ class ListerTest extends TestCase
 
     public function test_cut_list_by_memory_limit(): void
     {
+        $this->app->make('config')->set('preload.memory', 5);
+
         $listing = new Listing(files: new Collection([
             'foo' => ['memory_consumption' => 2 * 1024 ** 2],
             'bar' => ['memory_consumption' => 2 * 1024 ** 2],
             'quz' => ['memory_consumption' => 2 * 1024 ** 2],
             'fred' => ['memory_consumption' => 2 * 1024 ** 2],
-        ]), memory: 5);
+        ]));
 
         $this->app->make(CutListByMemoryLimit::class)->handle($listing, fn ($value) => $value);
 
@@ -325,7 +308,7 @@ class ListerTest extends TestCase
         $listing = new Listing(files: new Collection([
             'foo' => [],
             'bar' => [],
-        ]), memory: 5);
+        ]));
 
         $this->app->make(NormalizeList::class)->handle($listing, fn ($value) => $value);
 
@@ -372,6 +355,5 @@ class ListerTest extends TestCase
 
             return true;
         });
-
     }
 }

@@ -21,7 +21,6 @@ class Listing
         public Collection $files = new Collection,
         public int $excludeCount = 0,
         public int $includeCount = 0,
-        public int $memory = 0,
         public Stringable $statistics = new Stringable,
         public Stringable $preloader = new Stringable,
         public array $opcache = [],
