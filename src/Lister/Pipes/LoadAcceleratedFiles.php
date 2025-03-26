@@ -26,7 +26,7 @@ class LoadAcceleratedFiles
      */
     public function handle(Listing $listing, Closure $next): Listing
     {
-        $listing->files = new Collection($this->opcache->getScripts());
+        $listing->files = new Collection($this->opcache->getScripts()); // @phpstan-ignore-line
 
         if ($listing->files->isEmpty()) {
             throw new PreloadException('Opcache has no cached scripts.');
