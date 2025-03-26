@@ -2,6 +2,8 @@
 
 namespace Laragear\Preload;
 
+use Illuminate\Contracts\Cache\Factory as CacheContract;
+use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Http\Kernel as HttpContract;
@@ -25,7 +27,9 @@ class PreloadServiceProvider extends ServiceProvider
         $this->app->singleton(Preloader::class);
 
         $this->app->singleton(Condition::class, static function (Application $app): Condition {
-            return new Condition($app, Condition::countCondition());
+            return new Condition($app, static function (Repository $cache): bool {
+                return $cache->increment('laragear.preload.count') % 1000;
+            });
         });
     }
 
@@ -35,24 +39,18 @@ class PreloadServiceProvider extends ServiceProvider
     public function boot(ConfigContract $config, HttpContract $kernel): void
     {
         // We will only register the middleware if not Running Unit Tests
-        if ($this->shouldRun($config)) {
-            // @phpstan-ignore-next-line
+        if ($this->shouldRun($config) && method_exists($kernel, 'pushMiddleware')) {
             $kernel->pushMiddleware(PreloadMiddleware::class);
         }
 
         if ($this->app->runningInConsole()) {
             $this->publishes([static::CONFIG => $this->app->configPath('preload.php')], 'config');
-            $this->commands(Console\Commands\Placeholder::class);
+            $this->commands(Console\Commands\Stub::class);
         }
     }
 
     /**
      * Checks if Preload should run.
-     *
-     * @param  \Illuminate\Contracts\Config\Repository  $config
-     * @return bool
-     *
-     * @codeCoverageIgnore
      */
     protected function shouldRun(ConfigContract $config): bool
     {

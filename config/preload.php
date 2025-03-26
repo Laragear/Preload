@@ -19,23 +19,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Condition options
-    |--------------------------------------------------------------------------
-    |
-    | Preload includes a convenient "condition" which generates a preload
-    | script each 10,000 requests. You can change the options to pass to
-    | the condition closure, or use your own closure and options array.
-    |
-    */
-
-    'condition' => [
-        'store' => null,
-        'hits' => 10000,
-        'key' => 'preload|request_count',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Root directory
     |--------------------------------------------------------------------------
     |
@@ -83,17 +66,17 @@ return [
     | Output
     |--------------------------------------------------------------------------
     |
-    | Once the Preload script is generated, it will be written to the root
-    | path of your application, since it should have permission to write.
-    | You can change the script output for anything as long is writable.
+    | There are three files created, a preloader script, file containing some
+    | Opcache statistics and the preload file list. This option sets where
+    | these should be located. By default, this uses the app base path.
     |
     */
 
-    'path' => base_path('preload.php'),
+    'path' => base_path(),
 
     /*
     |--------------------------------------------------------------------------
-    | Upload method
+    | Preloading method
     |--------------------------------------------------------------------------
     |
     | Opcache supports preloading files by using `require_once` (which executes

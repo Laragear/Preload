@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Contracts\Cache\Factory as CacheContract;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 use Illuminate\Http\Request;
+use Illuminate\Support\Lottery;
 use Symfony\Component\HttpFoundation\Response;
 
 class Condition
@@ -19,45 +20,20 @@ class Condition
     }
 
     /**
-     * Use a callback for the condition.
-     */
-    public function use(Closure $callback): void
-    {
-        $this->callback = $callback;
-    }
-
-    /**
      * Check if the script should be generated.
      */
-    public function shouldGenerate(Request $request, Response $response): bool
+    public function __invoke(): bool
     {
-        return $this->app->call($this->callback, [
-            'options' => $this->app->make('config')->get('preload.condition'),
-            'request' => $request,
-            'response' => $response,
-        ]);
+        $result = $this->app->call($this->callback);
+
+        return (bool) ($result instanceof Lottery ? $result->choose() : $result);
     }
 
     /**
-     * Returns a condition callback based on requests count.
-     *
-     * Ensure your 'condition' array contains a 'store', 'key' and 'hits' keys.
+     * Use a callback for the condition.
      */
-    public static function countCondition(): Closure
+    public function use(callable $callback): void
     {
-        return static function (array $options, CacheContract $cache): bool {
-            // Increment the count by one. If it doesn't exist, we will start with 1.
-            $count = $cache->store($options['store'])->increment($options['key']);
-
-            // If the count is not equal to the number of hits, bail out.
-            if ($count !== $options['hits']) {
-                return false;
-            }
-
-            // Reset the hits back to zero.
-            $cache->store($options['store'])->set($options['key'], 0);
-
-            return true;
-        };
+        $this->callback = $callback(...);
     }
 }

@@ -9,46 +9,17 @@ use Orchestra\Testbench\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
-    /**
-     * Get package providers.
-     *
-     * @param  \Illuminate\Foundation\Application  $app
-     * @return array
-     */
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [
             PreloadServiceProvider::class,
         ];
     }
 
-    /**
-     * Override application aliases.
-     *
-     * @param  \Illuminate\Foundation\Application  $app
-     * @return array
-     */
-    protected function getPackageAliases($app)
+    protected function getPackageAliases($app): array
     {
         return [
             'Preload' => Preload::class,
         ];
-    }
-
-    /**
-     * Define routes setup.
-     *
-     * @param  \Illuminate\Routing\Router  $router
-     * @return void
-     */
-    protected function defineRoutes($router)
-    {
-        $router->get('test', function () {
-            return 'ok';
-        });
-
-        $router->get('test_fail', function () {
-            abort(404);
-        });
     }
 }

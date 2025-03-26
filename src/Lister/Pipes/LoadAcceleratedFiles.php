@@ -8,6 +8,9 @@ use Laragear\Preload\Exceptions\PreloadException;
 use Laragear\Preload\Listing;
 use Laragear\Preload\Opcache;
 
+/**
+ * @internal
+ */
 class LoadAcceleratedFiles
 {
     /**

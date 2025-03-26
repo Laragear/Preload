@@ -5,60 +5,55 @@ namespace Tests;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Fluent;
 use Laragear\Preload\Condition;
 use Laragear\Preload\Facades\Preload;
 use Laragear\Preload\Opcache;
 
 class ConditionTest extends TestCase
 {
-    protected Condition $condition;
-
-    protected function setUp(): void
+    protected function condition(): Condition
     {
-        parent::setUp();
-
-        $this->condition = $this->app->make(Condition::class);
+        return $this->app->make(Condition::class);
     }
 
     public function test_default_condition_count_ten_thousand_requests(): void
     {
-        Cache::put('preload|request_count', 9998);
+        $cache = $this->app->make('cache');
 
-        static::assertFalse($this->condition->shouldGenerate(new Request(), new Response()));
-        static::assertTrue($this->condition->shouldGenerate(new Request(), new Response()));
+        $cache->forever('laragear.preload.count', 9999);
+
+        static::assertFalse(($this->condition())());
+
+        static::assertTrue(($this->condition())());
     }
 
     public function test_allows_custom_condition(): void
     {
         $called = false;
 
-        $condition = function () use (&$called) {
+        $this->condition()->use(function () use (&$called) {
             $called = true;
 
             return true;
-        };
+        });
 
-        Preload::condition($condition);
+        $result = ($this->condition())();
 
-        static::assertTrue($this->condition->shouldGenerate(new Request(), new Response()));
+        static::assertTrue($result);
         static::assertTrue($called);
     }
 
-    public function test_condition_is_resolved_by_service_container(): void
+    public function test_condition_is_resolved_by_container(): void
     {
-        $this->app->singleton(Opcache::class, function () {
-            return new class extends Opcache
-            {
-                public string $ok = 'ok';
-            };
+        $this->app->instance(Fluent::class, $fluent = new Fluent());
+
+        $this->condition()->use(function (Fluent $instance) use ($fluent) {
+            static::assertSame($fluent, $instance);
+
+            return true;
         });
 
-        $condition = function (Opcache $opcache) {
-            return $opcache->ok === 'ok';
-        };
-
-        Preload::condition($condition);
-
-        static::assertTrue($this->condition->shouldGenerate(new Request(), new Response()));
+        ($this->condition())();
     }
 }

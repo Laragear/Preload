@@ -2,38 +2,50 @@
 
 namespace Tests\Http\Middleware;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Bus;
 use Laragear\Preload\Condition;
-use Laragear\Preload\Facades\Preload;
 use Laragear\Preload\Jobs\StorePreloadScript;
 use Laragear\Preload\Listing;
+use Laragear\Preload\Preloader;
 use Tests\TestCase;
+use function abort;
 
 class PreloadMiddlewareTest extends TestCase
 {
+    protected function defineEnvironment($app): void
+    {
+        $app->make('config')->set('preload.enabled', true);
+    }
+
+    protected function defineRoutes($router): void
+    {
+        $router->get('test', static function (): string {
+            return 'ok';
+        });
+
+        $router->get('test_fail', static function (): never {
+            abort(404);
+        });
+    }
+
+    protected function preload(): Preloader
+    {
+        return $this->app->make(Preloader::class);
+    }
+
     public function test_creates_list_when_condition_is_true(): void
     {
         $bus = Bus::fake();
 
-        Preload::shouldReceive('list')->once()->andReturn(
-            $listing = new Listing(new Collection())
-        );
+        $this->mock(Preloader::class)->expects('list')->once()->andReturn($listing = new Listing());
 
-        $this->mock(Condition::class)
-            ->allows('shouldGenerate')
-            ->once()
-            ->withArgs(static function ($request, $response): bool {
-                return $request instanceof Request
-                    && $response instanceof Response;
-            })
-            ->andReturnTrue();
+        $this->app->afterResolving(Condition::class, static function (Condition $condition) {
+            $condition->use(fn() => true);
+        });
 
         $this->get('test')->assertOk();
 
-        $bus->assertDispatched(StorePreloadScript::class, static function (StorePreloadScript $job) use ($listing): bool {
+        $bus->assertDispatched(StorePreloadScript::class, static function (StorePreloadScript $job) use ($listing) {
             static::assertSame($listing, $job->listing);
 
             return true;
@@ -49,16 +61,8 @@ class PreloadMiddlewareTest extends TestCase
             'queue' => 'bar',
         ]);
 
-        Preload::shouldReceive('list')->once()->andReturn(new Listing(new Collection()));
-
-        $this->mock(Condition::class)
-            ->allows('shouldGenerate')
-            ->once()
-            ->withArgs(static function ($request, $response): bool {
-                return $request instanceof Request
-                    && $response instanceof Response;
-            })
-            ->andReturnTrue();
+        $this->mock(Preloader::class)->expects('list')->once()->andReturn(new Listing());
+        $this->mock(Condition::class)->expects('__invoke')->once()->andReturnTrue();
 
         $this->get('test')->assertOk();
 
@@ -74,15 +78,11 @@ class PreloadMiddlewareTest extends TestCase
     {
         $bus = Bus::fake();
 
-        Preload::shouldReceive('list')->never();
+        $this->mock(Preloader::class)->expects('list')->never();
 
         $this->mock(Condition::class)
-            ->allows('shouldGenerate')
+            ->allows('__invoke')
             ->once()
-            ->withArgs(static function ($request, $response): bool {
-                return $request instanceof Request
-                    && $response instanceof Response;
-            })
             ->andReturnFalse();
 
         $this->get('test')->assertOk();
@@ -94,22 +94,11 @@ class PreloadMiddlewareTest extends TestCase
     {
         $bus = Bus::fake();
 
-        Preload::shouldReceive('list')->never();
-        $this->mock(Condition::class)->allows('shouldGenerate')->never();
+        $this->mock(Preloader::class)->expects('list')->never();
+        $this->mock(Condition::class)->allows('__invoke')->never();
 
         $this->get('test_failed')->assertNotFound();
 
         $bus->assertNotDispatched(StorePreloadScript::class);
-    }
-
-    /**
-     * Define environment setup.
-     *
-     * @param  \Illuminate\Foundation\Application  $app
-     * @return void
-     */
-    protected function defineEnvironment($app)
-    {
-        $app->make('config')->set('preload.enabled', true);
     }
 }

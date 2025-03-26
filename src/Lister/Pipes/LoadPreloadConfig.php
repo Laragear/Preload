@@ -6,6 +6,9 @@ use Closure;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Laragear\Preload\Listing;
 
+/**
+ * @internal
+ */
 class LoadPreloadConfig
 {
     /**

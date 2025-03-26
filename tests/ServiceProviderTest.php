@@ -21,14 +21,15 @@ class ServiceProviderTest extends TestCase
         );
     }
 
-    public function test_registers_preload(): void
+    public function test_registers_preloader_as_singleton(): void
     {
-        static::assertTrue($this->app->has(Preloader::class));
+        static::assertTrue($this->app->isShared(Preloader::class));
     }
 
-    public function test_registers_condition(): void
+    public function test_registers_condition_as_singleton(): void
     {
         static::assertTrue($this->app->has(Condition::class));
+        static::assertTrue($this->app->isShared(Condition::class));
     }
 
     public function test_doesnt_registers_global_middleware_on_testing(): void
@@ -38,6 +39,11 @@ class ServiceProviderTest extends TestCase
         static::assertFalse(
             $this->app->make(Kernel::class)->hasMiddleware(PreloadMiddleware::class)
         );
+    }
+
+    protected function usesProductionEnvironment(Application $app): void
+    {
+        $app['env'] = 'production';
     }
 
     /**
@@ -50,9 +56,9 @@ class ServiceProviderTest extends TestCase
         );
     }
 
-    protected function usesProductionEnvironment(Application $app)
+    protected function setConfigEnableTrue(Application $app): void
     {
-        $app['env'] = 'production';
+        $app->make('config')->set('preload.enabled', true);
     }
 
     /**
@@ -65,14 +71,9 @@ class ServiceProviderTest extends TestCase
         );
     }
 
-    protected function setConfigEnableTrue(Application $app): void
-    {
-        $app->make('config')->set('preload.enabled', true);
-    }
-
     public function test_registers_command(): void
     {
-        static::assertArrayHasKey('preload:placeholder', Artisan::all());
+        static::assertArrayHasKey('preload:stub', Artisan::all());
     }
 
     public function test_publishes_config(): void

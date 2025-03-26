@@ -4,6 +4,9 @@ namespace Laragear\Preload\Compiler;
 
 use Illuminate\Pipeline\Pipeline;
 
+/**
+ * @internal
+ */
 class Compiler extends Pipeline
 {
     /**
@@ -12,12 +15,19 @@ class Compiler extends Pipeline
      * @var array
      */
     protected $pipes = [
-        Pipes\LoadPreloadStub::class,
-        Pipes\UpdateOpcacheConfig::class,
-        Pipes\UpdateListingConfig::class,
-        Pipes\UpdateListingStatistics::class,
-        Pipes\UpdateListingFiles::class,
-        Pipes\WritePreloadFile::class,
+        Pipes\EnsureDirectoryExists::class,
+
+        Pipes\WriteListFile::class,
+
+        Pipes\LoadStatisticsStub::class,
+        Pipes\SetStatistics::class,
+        Pipes\SetOpcacheConfig::class,
+        Pipes\WriteStatisticsFile::class,
+
+        Pipes\LoadPreloaderStub::class,
+        Pipes\SetPreloadConfig::class,
+        Pipes\WritePreloaderFile::class,
+
         Pipes\FireEvent::class,
     ];
 }

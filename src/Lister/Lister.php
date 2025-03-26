@@ -4,6 +4,9 @@ namespace Laragear\Preload\Lister;
 
 use Illuminate\Pipeline\Pipeline;
 
+/**
+ * @internal
+ */
 class Lister extends Pipeline
 {
     /**
@@ -15,6 +18,7 @@ class Lister extends Pipeline
         Pipes\LoadOpcacheConfig::class,
         Pipes\LoadAcceleratedFiles::class,
         Pipes\LoadPreloadConfig::class,
+        Pipes\LoadIncludedAndExcludedLibraries::class,
         Pipes\ExcludePreloadVariable::class,
         Pipes\MayScopeFilesToProjectPath::class,
         Pipes\MayExcludeExternalFiles::class,

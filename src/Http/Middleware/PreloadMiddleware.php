@@ -4,14 +4,15 @@ namespace Laragear\Preload\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
 use Laragear\Preload\Condition;
-use Laragear\Preload\Facades\Preload;
 use Laragear\Preload\Jobs\StorePreloadScript;
+use Laragear\Preload\Preloader;
 use Symfony\Component\HttpFoundation\Response;
+use function app;
 
-use function resolve;
-
+/**
+ * @internal
+ */
 class PreloadMiddleware
 {
     /**
@@ -28,13 +29,16 @@ class PreloadMiddleware
     public function terminate(Request $request, Response $response): void
     {
         if ($response->isSuccessful() && $this->conditionIsTrue($request, $response)) {
-            $config = Config::get([
-                'preload.job.connection', 'preload.job.queue',
-            ]);
+            $app = app();
 
-            StorePreloadScript::dispatch(Preload::list())
-                ->onConnection($config['preload.job.connection'])
-                ->onQueue($config['preload.job.queue']);
+            [
+                'preload.job.connection' => $connection,
+                'preload.job.queue' => $queue,
+            ] = $app->make('config')->getMany(['preload.job.connection', 'preload.job.queue',]);
+
+            StorePreloadScript::dispatch($app->make(Preloader::class)->list())
+                ->onConnection($connection)
+                ->onQueue($queue);
         }
     }
 
@@ -43,6 +47,9 @@ class PreloadMiddleware
      */
     protected function conditionIsTrue(Request $request, Response $response): bool
     {
-        return resolve(Condition::class)->shouldGenerate($request, $response);
+        return app()->call(Condition::class, [
+            'request' => $request,
+            'response' => $response,
+        ]);
     }
 }

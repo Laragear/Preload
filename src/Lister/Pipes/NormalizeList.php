@@ -5,6 +5,9 @@ namespace Laragear\Preload\Lister\Pipes;
 use Closure;
 use Laragear\Preload\Listing;
 
+/**
+ * @internal
+ */
 class NormalizeList
 {
     /**

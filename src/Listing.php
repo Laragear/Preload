@@ -12,19 +12,19 @@ class Listing
      *
      * @param  \Illuminate\Support\Collection<array-key,string|string[]>  $files
      * @param  (\Closure(\Symfony\Component\Finder\Finder):void)[]  $exclude
-     * @param  (\Closure(\Symfony\Component\Finder\Finder):void)[]  $append
+     * @param  (\Closure(\Symfony\Component\Finder\Finder):void)[]  $include
      * @param  string[]|array[]  $opcache
      */
     public function __construct(
-        public Collection $files,
-        public bool $projectOnly = true,
         public array $exclude = [],
-        public array $append = [],
+        public array $include = [],
+        public Collection $files = new Collection,
+        public bool $projectOnly = true,
         public int $excludeCount = 0,
-        public int $appendCount = 0,
+        public int $includeCount = 0,
         public int $memory = 0,
-        public string $path = '',
-        public ?Stringable $output = null,
+        public Stringable $statistics = new Stringable,
+        public Stringable $preloader = new Stringable,
         public array $opcache = [],
     ) {
         //

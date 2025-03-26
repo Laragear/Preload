@@ -10,7 +10,10 @@ use Laragear\Preload\Exceptions\PreloadException;
 use Laragear\Preload\Listing;
 use Laragear\Preload\Preloader;
 
-class LoadPreloadStub
+/**
+ * @internal
+ */
+class LoadPreloaderStub
 {
     /**
      * Create a new pipe instance.
@@ -25,7 +28,7 @@ class LoadPreloadStub
      */
     public function handle(Listing $listing, Closure $next): Listing
     {
-        $listing->output = new Stringable($this->stubContents());
+        $listing->preloader = new Stringable($this->stubContents());
 
         return $next($listing);
     }
@@ -38,9 +41,11 @@ class LoadPreloadStub
     protected function stubContents(): string
     {
         try {
-            return $this->files->get(Preloader::STUB);
+            return $this->files->get(Preloader::STUB_PRELOAD);
         } catch (FileNotFoundException $e) {
-            throw new PreloadException('Cannot read the stub "'.Preloader::STUB.'" contents.', $e->getCode(), $e);
+            throw new PreloadException(
+                'Cannot read the stub "'.Preloader::STUB_PRELOAD.'" contents.', $e->getCode(), $e
+            );
         }
     }
 }

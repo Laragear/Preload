@@ -11,6 +11,9 @@ use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Laragear\Preload\Listing;
 use Laragear\Preload\Preloader;
 
+/**
+ * @internal
+ */
 class StorePreloadScript implements ShouldQueue, ShouldBeUnique, ShouldBeUniqueUntilProcessing
 {
     use Dispatchable, Queueable;
@@ -25,7 +28,17 @@ class StorePreloadScript implements ShouldQueue, ShouldBeUnique, ShouldBeUniqueU
      */
     public function __construct(public Listing $listing)
     {
-        $this->middleware = [new WithoutOverlapping(static::OVERLAP_KEY)];
+        //
+    }
+
+    /**
+     * Get the middleware the job should pass through.
+     *
+     * @return array<int, object>
+     */
+    public function middleware(): array
+    {
+        return [new WithoutOverlapping(static::OVERLAP_KEY)];
     }
 
     /**
@@ -33,6 +46,6 @@ class StorePreloadScript implements ShouldQueue, ShouldBeUnique, ShouldBeUniqueU
      */
     public function handle(Preloader $preload): void
     {
-        $preload->generate($this->listing);
+        $preload->save($this->listing);
     }
 }

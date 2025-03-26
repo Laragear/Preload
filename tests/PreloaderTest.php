@@ -9,93 +9,128 @@ use Laragear\Preload\Compiler\Compiler;
 use Laragear\Preload\Facades\Preload;
 use Laragear\Preload\Lister\Lister;
 use Laragear\Preload\Listing;
+use Laragear\Preload\Preloader;
 use Mockery;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 class PreloaderTest extends TestCase
 {
-    public function test_adds_to_exclusion(): void
+    protected function preloader(): Preloader
     {
-        $lister = $this->mock(Lister::class);
+        return $this->app->make(Preloader::class);
+    }
 
-        $lister->allows('send')->once()->withArgs(static function (Listing $listing): bool {
-            static::assertCount(2, $listing->exclude);
-            static::assertInstanceOf(Closure::class, $listing->exclude[0]);
-            static::assertInstanceOf(Closure::class, $listing->exclude[1]);
+    public function test_excludes(): void
+    {
+        $this->mock(Lister::class, static function (Mockery\MockInterface $mock) {
+            $mock->expects('send')->once()->withArgs(static function (Listing $listing): bool {
+                static::assertCount(2, $listing->exclude);
+                static::assertInstanceOf(Closure::class, $listing->exclude[0]);
+                static::assertInstanceOf(Closure::class, $listing->exclude[1]);
 
-            return true;
-        })->andReturnSelf();
+                return true;
+            })->andReturnSelf();
 
-        $lister->allows('thenReturn')->once()->andReturn(new Listing(new Collection(['foo', 'bar'])));
-
-        Preload::exclude('foo', function ($finder) {
-            $finder->in('bar');
+            $mock->expects('thenReturn')->once()->andReturn(new Listing());
         });
 
-        $list = Preload::list();
+        $this->preloader()->exclude(['foo', fn ($finder) => $finder->in('bar')]);
 
-        static::assertSame(['foo', 'bar'], $list->files->all());
+        $this->preloader()->files();
     }
 
-    public function test_adds_to_append(): void
+    public function test_excludes_with_string(): void
     {
-        $lister = $this->mock(Lister::class);
+        $this->mock(Lister::class, static function (Mockery\MockInterface $mock) {
+            $mock->expects('send')->once()->withArgs(static function (Listing $listing): bool {
+                static::assertCount(1, $listing->exclude);
+                static::assertInstanceOf(Closure::class, $listing->exclude[0]);
 
-        $lister->allows('send')->once()->withArgs(static function (Listing $listing): bool {
-            static::assertCount(2, $listing->append);
-            static::assertInstanceOf(Closure::class, $listing->append[0]);
-            static::assertInstanceOf(Closure::class, $listing->append[1]);
+                return true;
+            })->andReturnSelf();
 
-            return true;
-        })->andReturnSelf();
-
-        $lister->allows('thenReturn')->once()->andReturn(new Listing(new Collection(['foo', 'bar'])));
-
-        Preload::append('foo', function ($finder) {
-            $finder->in('bar');
+            $mock->expects('thenReturn')->once()->andReturn(new Listing());
         });
 
-        $list = Preload::list();
+        $this->preloader()->exclude('foo');
 
-        static::assertSame(['foo', 'bar'], $list->files->all());
+        $this->preloader()->files();
     }
 
-    public function test_generates_from_list(): void
+    public function test_includes(): void
     {
-        $compiler = $this->mock(Compiler::class);
+        $this->mock(Lister::class, static function (Mockery\MockInterface $mock) {
+            $mock->expects('send')->once()->withArgs(static function (Listing $listing): bool {
+                static::assertCount(2, $listing->include);
+                static::assertInstanceOf(Closure::class, $listing->include[0]);
+                static::assertInstanceOf(Closure::class, $listing->include[1]);
 
-        $listing = new Listing(new Collection(['foo']));
+                return true;
+            })->andReturnSelf();
 
-        $compiler->allows('send')->withArgs(static function (Listing $arg) use ($listing): bool {
-            static::assertSame($listing, $arg);
+            $mock->expects('thenReturn')->once()->andReturn(new Listing());
+        });
 
-            return true;
-        })->andReturnSelf();
+        $this->preloader()->include(['foo', fn ($finder) => $finder->in('bar')]);
 
-        $compiler->allows('thenReturn')->andReturn($listing);
-
-        static::assertSame($listing, Preload::generate($listing));
+        $this->preloader()->files();
     }
 
-    public function test_gets_preloading_files_from_finder_callback(): void
+    public function test_includes_with_string(): void
     {
-        $callback = static function (Finder $finder): void {
-            $finder->in('foo')->name('bar');
-        };
+        $this->mock(Lister::class, static function (Mockery\MockInterface $mock) {
+            $mock->expects('send')->once()->withArgs(static function (Listing $listing): bool {
+                static::assertCount(1, $listing->include);
+                static::assertInstanceOf(Closure::class, $listing->include[0]);
 
-        $finder = $this->mock(Finder::class);
+                return true;
+            })->andReturnSelf();
 
-        $finder->allows('in')->with('foo')->andReturnSelf();
-        $finder->allows('name')->with('bar')->andReturnSelf();
+            $mock->expects('thenReturn')->once()->andReturn(new Listing());
+        });
 
-        $file = Mockery::mock(SplFileInfo::class);
-        $file->allows('getRealPath')->once()->andReturn('baz.php');
+        $this->preloader()->include('foo');
 
-        $finder->allows('getIterator')->andReturn(new ArrayIterator([$file]));
+        $this->preloader()->files();
+    }
 
-        $files = Preload::getFilesFromFinder($callback);
+    public function test_save(): void
+    {
+        $listing = new Listing();
 
-        static::assertSame(['baz.php'], $files->all());
+        $this->mock(Lister::class, static function (Mockery\MockInterface $mock) use ($listing): void {
+            $mock->expects('send')->with(Mockery::type(Listing::class))->once()->andReturnSelf();
+            $mock->expects('thenReturn')->andReturn($listing);
+        });
+
+        $this->mock(Compiler::class, static function (Mockery\MockInterface $mock) use ($listing): void {
+            $mock->expects('send')->withArgs(static function (Listing $arg) use ($listing): bool {
+                static::assertSame($listing, $arg);
+
+                return true;
+            })->andReturnSelf();
+
+            $mock->expects('thenReturn')->andReturn($listing);
+        });
+
+        static::assertSame($listing, $this->preloader()->save());
+    }
+
+    public function test_save_with_custom_listing(): void
+    {
+        $listing = new Listing();
+
+        $this->mock(Compiler::class, static function (Mockery\MockInterface $mock) use ($listing): void {
+            $mock->expects('send')->withArgs(static function (Listing $arg) use ($listing): bool {
+                static::assertSame($listing, $arg);
+
+                return true;
+            })->andReturnSelf();
+
+            $mock->expects('thenReturn')->andReturn($listing);
+        });
+
+        static::assertSame($listing, $this->preloader()->save($listing));
     }
 }

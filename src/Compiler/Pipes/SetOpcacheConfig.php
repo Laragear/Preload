@@ -7,14 +7,17 @@ use Laragear\Preload\Listing;
 
 use function number_format;
 
-class UpdateOpcacheConfig
+/**
+ * @internal
+ */
+class SetOpcacheConfig
 {
     /**
      * Handle the script generation.
      */
     public function handle(Listing $listing, Closure $next): Listing
     {
-        $listing->output = $listing->output->replace(...$this->opcacheConfig($listing->opcache));
+        $listing->statistics = $listing->statistics->replace(...$this->opcacheConfig($listing->opcache));
 
         return $next($listing);
     }

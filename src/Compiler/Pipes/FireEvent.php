@@ -7,6 +7,9 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Laragear\Preload\Events\PreloadGenerated;
 use Laragear\Preload\Listing;
 
+/**
+ * @internal
+ */
 class FireEvent
 {
     /**

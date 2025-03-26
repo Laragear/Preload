@@ -7,6 +7,9 @@ use Laragear\Preload\Listing;
 
 use function round;
 
+/**
+ * @internal
+ */
 class CutListByMemoryLimit
 {
     /**

@@ -6,7 +6,7 @@
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Laragear_Preload&metric=alert_status)](https://sonarcloud.io/dashboard?id=Laragear_Preload)
 [![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/9.x/octane#introduction)
 
-Dynamically preload your Laravel application. 
+Dynamically preload your Laravel application.
 
 This package generates a [PHP preloading](https://www.php.net/manual/en/opcache.configuration.php#ini.opcache.preload) script from your Opcache statistics automatically. No need to hack your way in.
 
@@ -14,12 +14,12 @@ This package generates a [PHP preloading](https://www.php.net/manual/en/opcache.
 
 [![](.github/assets/support.png)](https://github.com/sponsors/DarkGhostHunter)
 
-Your support allows me to keep this package free, up-to-date and maintainable. Alternatively, you can **[spread the word!](http://twitter.com/share?text=I%20am%20using%20this%20cool%20PHP%20package&url=https://github.com%2FLaragear%2FPreload&hashtags=PHP,Laravel)**
+Your support allows me to keep this package free, up-to-date and maintainable. Alternatively, you can **spread the word on social media!**
 
 ## Requirements
 
-* Laravel 10 or later
-* [Opcache & Preloading enabled](https://www.php.net/manual/en/book.opcache.php) (`ext-zend-opcache`).
+* Laravel 11 or later
+* [Opcache & Preloading enabled](https://www.php.net/manual/en/book.opcache.php) (`ext-opcache`).
 
 ## Installation
 
@@ -31,52 +31,141 @@ composer require laragear/preload
 
 > [!NOTE]
 >
-> This package doesn't require the `ext-zend-opcache` extension to install. Just be sure to have it [enabled in your deployment server](https://www.php.net/manual/en/book.opcache.php).
+> This package doesn't require the `ext-opcache` extension to install. Just be sure to have it [enabled in your deployment server](https://www.php.net/manual/en/book.opcache.php).
 
 ## What is Preloading? Does it make my app FAST?
 
 PHP interpreter needs to read and compile each requested file in your project. When Opcache is enabled, it will keep interpreted files in memory instead of reading them again from the file system, which is miles faster.
 
-Opcache's Preloading allows to store in memory a given list of files when the PHP process starts, before normal execution. This makes the application _faster_ during the first requests, as these files to read are already in memory. With JIT, these files are also compiled into byte-code and saving another step.
+Opcache's Preloading allows to store in memory a given list of files when the PHP process starts, before normal execution. This makes the application _faster_ for first requests, as these files to read are already in memory. With [JIT](https://www.php.net/manual/en/opcache.configuration.php#ini.opcache.jit), these files are also compiled into byte-code, saving another step.
 
-This package generates a preload file with the most accessed files of your application. Once done, you can point the generated list into your `php.ini`:
+This package generates a file with a list of the most accessed files of your application, and a script that will load these files on startup. You can point the "loader" script into your `php.ini`:
 
 ```ini
 opcache.preload_user = 'www-data'
-opcache.preload = 'www/app/preload.php';
+opcache.preload = '/www/app/preload.php';
 ```
 
 After that, the next time PHP starts, this list of files will be preloaded automatically.
 
 > [!NOTE]
-> 
-> If you're behind a shared server, preloading may be not available for your application. Normally, shared servers also share the same PHP process, which configuration (`php.ini`) is not available for configuration. Check your server if you're not sure if Laragear Preload should be installed.
+>
+> If you're behind a shared server, preloading may be not available for your application. Normally, shared servers also share the same PHP process, and its configuration file (`php.ini`) is not available for modification. Check your server if you're not sure if Laragear Preload should be installed.
 
 ## Usage
 
-By default, this package pushes a queued job data each 10,000 requests, containing a limited list of the most accessed files of the application.
+By default, this package pushes a queued job data each 10,000 requests, containing a limited list of the most accessed files of the application. [This condition can be changed](#custom-condition).
 
-First, since you will start with no script generated, create an empty preload list using the `preload:placeholder` command.
+First, you should publish the stub script with the `preload:stub` Artisan command. By default, it will copy a stub preloader into application root directory [by default](#paths).
 
 ```bash
-php artisan preload:placeholder
+php artisan preload:stub
 
-# Generating a preload placeholder at: /www/app/preload.php
+# Stub copied at [/www/app/preload.php]
 #
-# Empty preload stub generated
 # Remember to edit your [php.ini] file:
-# opcache.preload = '/www/app/preload.php';
+# opcache.preload = /www/app/preload.php;
 ```
 
-> [!IMPORTANT]
->
-> The command won't replace the file if it exists. You can force the operation using `--force`. 
-
-Add the preload file path in your `php.ini`:
+This way, you can add the preload file path in your `php.ini` as instructed by the command.
 
 ```ini
 opcache.preload = '/www/app/preload.php';
 ```
+
+That's it. At the 10,000th request, the preloader stub will be replaced by a real preload script along with the list of files that should be warmed up by PHP at startup.
+
+## Custom condition
+
+This package includes a simple condition callback: each 10,000 requests, generate a Preloading script.
+
+If this condition is not enough for your application, or you require a custom condition, you can easily create a callback or even an _invokable_ class with your own logic. The callable will be resolved by the application container, and run after the request has been sent to the browser.
+
+Once you create the condition, register it through the `condition()` method of the `Preloader` facade. You can do this in your `App\Providers\AppServiceProvider` or `bootstrap/app.php`.
+
+```php
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Lottery;
+use Laragear\Preload\Facades\Preload;
+
+return Application::configure()
+    ->registered(function () {
+        Preload::condition(function (Request $request) {
+            if ($request->user()?->isAdmin()) {
+                return false;
+            }
+            
+            return random_int(0, 100) === 50;
+        });
+    })->create();
+```
+
+You may also return a `Illuminate\Support\Lottery` instance for convenience, which is great for testing purposes.
+
+```php
+use Illuminate\Support\Lottery;
+use Laragear\Preload\Facades\Preload;
+
+Preload::condition(function (Request $request) {
+    if ($request->user()?->isAdmin()) {
+        return false;
+    }
+    
+    return Lottery::odds(2, 100);
+});
+```
+
+## Include and exclude
+
+To include or exclude PHP files or entire directory paths from the Preload list, use the `include()` and `exclude()` methods from the `Preload` facade, respectively.
+
+Both methods accept an array of [glob patterns](https://en.wikipedia.org/wiki/Glob_(programming)) or a callback that receives the [Symfony Finder](https://symfony.com/doc/current/components/finder.html) for greater filtering options. On both cases, only `.php` files will be included in the list.
+
+```php
+use Laragear\Preload\Facades\Preload;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
+use Symfony\Component\Finder\Finder;
+
+return Application::configure()
+    ->booted(function () {
+        Preload::include(base_path('/services/**'));
+        
+        Preload::exclude(function (Finder $find) {
+            $find->in(base_path('/temp/'))->contains('class ');
+        });
+    })
+    ->create();
+```
+
+> [!IMPORTANT]
+> 
+> Included files will be _appended_ to the list. This means that exclusion logic will run first. 
+
+### Excluding and including libraries
+
+You can easily exclude or include entire libraries from your application by setting them at the `extra.preload` key of your `composer.json`, respectively.
+
+The `preload` object should contain the library name as key, and `false` to exclude it or `true` to include. If you require fine-tuning, you can use an object with `exclude` and `include` files and a glob pattern for the file or files you wish to exclude or include, respectively. These patterns will be fed to the underlying Symfony Finder.
+
+```json
+{
+    "extra": {
+        "preload": {
+            "laragear/meta": {
+                "exclude": ["src/Foo/*", "src/Bar/*/**"],
+                "include": "src/Request/*"
+            },
+            "charlesdp/builder": false
+        }
+    }
+}
+```
+
+> [!IMPORTANT]
+>
+> Included libraries will be _appended_ to the list. This means that exclusion logic will run first.
 
 ## Configuration
 
@@ -95,18 +184,13 @@ Let's check the config array:
 
 return [
     'enabled' => env('PRELOAD_ENABLE'),
-    'condition' => [
-        'store' => null,
-        'hits' => 10000,
-        'key' => 'preload|request_count'
-    ],
     'project_only' => true,
     'memory' => 32,
     'job' => [
         'connection' => env('PRELOAD_JOB_CONNECTION'),
         'queue' => env('PRELOAD_JOB_QUEUE'),
     ],
-    'path' => base_path('preload.php'),
+    'path' => base_path(),
     'use_require' => false,
     'autoload' => base_path('vendor/autoload.php'),
     'ignore_not_found' => true,
@@ -117,7 +201,7 @@ return [
 
 ```php
 return [
-    'enable' => env('PRELOAD_ENABLE'),
+    'env' => env('PRELOAD_ENABLE'),
 ];
 ```
 
@@ -125,29 +209,6 @@ By default, a global middleware is registered automatically on production enviro
 
 ```dotenv
 PRELOAD_ENABLE=true
-```
-
-#### Condition
-
-```php
-return [
-    'condition' => [
-        'store' => null,
-        'hits' => 10000,
-        'key' => 'preload|request_count'
-    ],
-];
-```
-
-This package comes with a _simple_ condition callback that returns `true` when it counts 10,000 successful requests. This array is sent to the callback as the `$options` parameter, which will be useful if you want to define [your own condition](#custom-condition).
-
-```php
-use Illuminate\Http\Request;
-use Laragear\Preload\Facades\Preload;
-
-Preload::condition(function (array $options) {
-    return random_int(1, $options['max']) < 3;
-});
 ```
 
 ### Project Scope
@@ -158,17 +219,17 @@ return [
 ];
 ```
 
-Some PHP processes may be shared between multiple projects. To avoid preloading files outside the current project, this is set to `true` by default. Disabling it will allow preloading files regardless of the directory.
+Some PHP processes may be shared between multiple projects. To avoid preloading files outside the current project, this is set to `true` by default. Disabling it will allow preloading files regardless of the directory, even outside the project path.
 
-#### Memory Limit
+### Memory Limit
 
 ```php
 return [
-    'memory' => 64,
+    'memory' => 32,
 ];
 ```
 
-The memory limit, in MegaBytes, of the List. Once this threshold is reached, no more scripts will be included in the list. 
+The memory limit, in MiB (aka "Windows MegaBytes"), of the List. Once this threshold is reached, no more scripts will be included in the list.
 
 For most applications, 32MB is fine, but you may fine-tune it for your project specifically.
 
@@ -176,7 +237,7 @@ For most applications, 32MB is fine, but you may fine-tune it for your project s
 >
 > This is not Opcache memory limit, as its handled separately.
 
-#### Job configuration
+### Job configuration
 
 ```php
 return [
@@ -187,28 +248,30 @@ return [
 ];
 ```
 
-When the job receives the list to persist, it will be dispatched to the connection and queue set here. When `null`, the framework uses the defaults. You can use your `.env` file to set them:
+When the job receives the list to persist, it will be dispatched to the connection and queue set here. When `null`, the framework uses the defaults. You should use your `.env` file to set them:
 
 ```dotenv
 PRELOAD_JOB_CONNECTION=redis
 PRELOAD_JOB_QUEUE=low
 ```
 
-#### Path
+### Paths
 
 ```php
 return [
-    'path' => base_path('preload.php'),
+    'path' => base_path(),
 ];
 ```
 
-By default, the script is saved in your project root path, but you can change the filename and path to save it as long PHP has permissions to write on it. Whatever you place it, never do it in a public/accessible directory, like `public` or `storage/app/public`.
+This set the directory path where the preloader files should be stored. By default, it uses your project root path.   
+
+If you change the directory path, ensure PHP has permissions to write on it. Whatever you place it, never do it in a public/accessible directory, like `public` or `storage/app/public`.
 
 > [!IMPORTANT]
 >
 > Double-check your file permissions to avoid failures on production when reading the file.
 
-#### Method
+### Method
 
 ```php
 return [
@@ -219,9 +282,9 @@ return [
 
 Opcache allows preloading files using `require_once` or `opcache_compile_file()`.
 
-Preload uses `opcache_compile_file()` for better manageability on the files preloaded. Some unresolved links may output warnings at startup, but nothing critical.
+Preload uses `opcache_compile_file()` by default for better manageability on the files preloaded. Some unresolved links may output warnings at startup, but nothing critical.
 
-Using `require_once` will **execute** all files. By resolving all the links (imports, parent classes, traits, interfaces, etc.) before compiling it, it may output heavy errors on files that shouldn't be executed like plain scripts. Depending on your application, you may want to use one over the other.
+Using `require_once` will **execute** the files found. By resolving all the links (imports, parent classes, traits, interfaces, etc.) before compiling it, it may output heavy errors on files that shouldn't be executed like plain scripts. Depending on your application, you may want to use one over the other.
 
 If you plan use `require_once`, ensure you have set the correct path to the Composer Autoloader, since it will be used to resolve classes, among other files.
 
@@ -233,86 +296,42 @@ return [
 ];
 ```
 
-Some files are created by Laravel at runtime and actively cached by Opcache, but on deployment are absent, like [real-time facades](https://laravel.com/docs/facades#real-time-facades). Ignoring them is safe and enabled by default.
+Some files are created by Laravel at runtime and actively cached by Opcache, but on deployment are absent, like [real-time facades](https://laravel.com/docs/facades#real-time-facades) or compiled Blade Views. It's safe to ignore them by default.
 
 You can disable this for any reason, which will throw an Exception if any file is missing, but is recommended leaving it alone unless you know what you're doing.
 
-### Exclude and append files
+## Testing
 
-Exclude and append files from directories by just issuing an array of **directory paths** in your App Service Provider, through the `Preload` facade. 
+On `testing` environments, the middleware responsible for executing the condition is never registered in the HTTP Kernel, so your test won't mistakenly create a preload script.
 
-You can also use a function that receives the [Symfony Finder](https://symfony.com/doc/current/components/finder.html), which is included in this package, for greater filtering options.
+You may alternatively force the middleware to not be registered by setting the `PRELOAD_ENABLE` environment variable to `false` in your `phpunit.xml`.
 
-```php
-use Symfony\Component\Finder\Finder;
-use Illuminate\Support\ServiceProvider;
-use Laragear\Preload\Facades\Preload;
-
-class AppServiceProvider extends ServiceProvider
-{
-    // ...
-    
-    public function boot()
-    {
-        Preload::append(function (Finder $find) {
-            $find->in(base_path('foo/'))
-                ->contains('class ')
-                ->name('*.php');
-        });
-        
-        Preload::exclude(
-            base_path('/bar/'),
-            base_path('/baz/Http/'),
-        );
-    }
-}
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit>
+    <!-- ... -->
+    <php>
+        <!-- ... -->
+        <env name="PRELOAD_ENABLE" value="false"/>
+    </php>
+</phpunit>
 ```
 
-## Custom condition
+## FAQ
 
-This package includes a simple condition callback: return `true` each 10,000 requests. The number of requests, the cache to use and the key for the cache can be set in the [`condition` section of the configuration](#condition).
+* **Can I manually disable the Preloader?**
 
-On some scenarios, you may want to use a random seed, or generate a list periodically. You can create your own condition by setting the callback in your `AppServiceProvider`:
-
-```php
-use Laragear\Preload\Facades\Preload;
-use Illuminate\Support\Facades\Cache;
-
-public function register()
-{
-    Preload::condition(function () {
-        if (Cache::has('preload generated yesterday')) {
-            return false;
-        }
-        
-        Cache::put('preload generated yesterday', true, now()->endOfDay());
-        
-        return true;
-    });
-    
-    // ...
-}
-```
-
-### FAQ
-
-* **Can I manually disable Preloader?**
-
-[Yes.](#enable) This basically doesn't register the global middleware.
+[Yes](#enable). When disabled, the global middleware that executes the condition doesn't run at all.
 
 * **Do I need to restart PHP after the list is generated?**
 
-No, the list generated is already in Opcache memory.
-
-* **The package returned errors when I used it!**
-
-Check you're using the [latest PHP stable version](https://www.php.net/supported-versions.php), and Opcache is enabled. Also, check the script path is writable. All PHP errors are logged, so check it out.
-
-If you're sure this is an error by the package, [open an issue](https://github.com/Laragear/Preload/issues/new) with full details and stack trace.
+No. The files are already in Opcache memory.
 
 * **Why I can't use something like `php artisan preload:generate` instead or a [scheduled job](https://laravel.com/docs/scheduling)?**
 
-Opcache is not enabled when using PHP CLI, and if it is, it gathers CLI statistics. You must let this package gather real statistics from a live application.
+Because it requires Opcache statistics from the live application.
+
+Running PHP CLI will gather CLI statistics, different to the web server, which is shows unrealistic statistics.
 
 * **Does this excludes the package itself from the list? Does make a difference?**
 
@@ -326,9 +345,9 @@ If you still _feel_ your app is slow, remember to benchmark your app, cache your
 
 * **How the list is created?**
 
-Basically: the most hit files in descending order. Each file consumes memory, so the list is cut when the cumulative memory usage reaches the limit (32MB by default).
+Most hit files in descending order. Each file consumes memory, so the list is cut when the cumulative memory usage reaches the [configurable limit](#memory-limit).
 
-If the last file is a class with links outside the list, PHP will issue some warnings, which is normal and intended, but it won't compile the linked files if these were not added before.
+When classes with links to files not contained in the list are loaded, PHP will issue some warnings, which is normal and intended.
 
 * **Can I just put all the files in my project?**
 
@@ -350,41 +369,22 @@ Nope. The middleware is not registered if the application is running under Unit 
 
 * **How can I know when a Preload script is successfully generated?**
 
-The `ListGenerated` and `ScriptStored` events are fired when the list is generated during a request, and the script is saved through a queued job, respectively.
+The `ListGenerated` and `PreloadGenerated` events are fired when the list is generated during a request, and the script is saved through a queued job, respectively.
 
 You can [add a Listener](https://laravel.com/docs/events#registering-events-and-listeners) to dispatch an email or a Slack notification.
 
-## Excluding / Including files from `composer.json`
-
-You can have better control on what packages to preload, and which files to exclude or include from the list.
-
-If your `composer.json` file, use the `extra.preload.exclude` key with the package name, and the paths of the files. These strings will be fed to the underlying Symfony Finder instance.
-
-Using `true` will exclude all files from the package name. 
-
-```json
-{
-    "extra": {
-        "preload": {
-            "exclude": {
-                "laragear/meta": ["src/Cache/*", "resources/views"],
-                "charlesdp/builder": true
-            }
-        }
-    }
-}
-```
-
 ## Laravel Octane Compatibility
 
-- A Preloader class is registered with the application and config. There is no reason to resolve it on boot time.
-- A Condition class is registered with the application and config. Config is meant to be unchangeable for security purposes.
+- There are no singletons using a stale application instance.
+- There are no singletons using a stale config instance.
+- There are no singletons using a stale request instance.
+- There are no static properties written during a request.
 
-Aside from that, the (real) condition callback is always executed each Request using the Service Container, so it can (but shouldn't) resolve a fresh config repository. 
+Aside from that, the (real) condition callback is always executed each Request using the Service Container, so it can (but shouldn't) resolve a fresh config repository.
 
 ## Security
 
-If you discover any security related issues, please email darkghosthunter@gmail.com instead of using the issue tracker.
+If you discover any security related issues, please [use the online form](https://github.com/Laragear/Preload/security).
 
 # License
 

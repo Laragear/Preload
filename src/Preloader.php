@@ -4,6 +4,7 @@ namespace Laragear\Preload;
 
 use Closure;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -14,19 +15,42 @@ use function resolve;
 class Preloader
 {
     /**
-     * The location of the preload script stub.
+     * The location of the statistic file.
+     *
+     * @const string
      */
-    public const STUB = __DIR__.'/../stubs/preload.php.stub';
+    public const STUB_STATISTICS = __DIR__ . '/../stubs/statistics.md';
 
     /**
-     * The location of the placeholder preload stub.
+     * The location of the preload script stub.
      */
-    public const PLACEHOLDER = __DIR__.'/../stubs/preload.php.placeholder.stub';
+    public const STUB_PRELOAD = __DIR__.'/../stubs/preload.php.stub';
+
+    /**
+     * The filename for the statistics file.
+     *
+     * @const string
+     */
+    public const NAME_STATISTICS = 'statistics.md';
+
+    /**
+     * The filename for the preload script file.
+     *
+     * @const string
+     */
+    public const NAME_PRELOAD = 'preload.php';
+
+    /**
+     * The filename of the list of preload files.
+     *
+     * @const string
+     */
+    public const NAME_LIST = 'list.txt';
 
     /**
      * Create a new Preload instance.
      *
-     * @param  array<string|\Closure(\Symfony\Component\Finder\Finder):void>  $append
+     * @param  array<string|\Closure(\Symfony\Component\Finder\Finder):void>  $include
      * @param  array<string|\Closure(\Symfony\Component\Finder\Finder):void>  $exclude
      */
     public function __construct(
@@ -34,7 +58,7 @@ class Preloader
         protected Opcache $opcache,
         protected Lister\Lister $lister,
         protected Compiler\Compiler $compiler,
-        protected array $append = [],
+        protected array $include = [],
         protected array $exclude = [],
     ) {
         //
@@ -43,9 +67,9 @@ class Preloader
     /**
      * Exclude files from the given paths.
      *
-     * @param  (\Closure(\Symfony\Component\Finder\Finder):void)|string  ...$exclude
+     * @param  (\Closure(\Symfony\Component\Finder\Finder):void)|string|string[]  $exclude
      */
-    public function exclude(Closure|string ...$exclude): void
+    public function exclude(Closure|string|array $exclude): void
     {
         $this->exclude = $this->normalizeListing($exclude);
     }
@@ -53,67 +77,47 @@ class Preloader
     /**
      * Append files from the given paths.
      *
-     * @param  (\Closure(\Symfony\Component\Finder\Finder):void)|string  ...$append
+     * @param  (\Closure(\Symfony\Component\Finder\Finder):void)|string|string[]  $append
      */
-    public function append(Closure|string ...$append): void
+    public function include(Closure|string|array $append): void
     {
-        $this->append = $this->normalizeListing($append);
+        $this->include = $this->normalizeListing($append);
     }
 
     /**
      * Normalize the listing from the user.
      *
-     * @param  array<string|(\Closure(\Symfony\Component\Finder\Finder):void)>  $listing
+     * @param  (\Closure(\Symfony\Component\Finder\Finder):void)|string|string[]  $files
      * @return (\Closure(\Symfony\Component\Finder\Finder):void)[]
      */
-    protected function normalizeListing(array $listing): array
+    protected function normalizeListing(Closure|string|array $files): array
     {
-        foreach ($listing as $key => $list) {
-            if (is_string($list)) {
-                $listing[$key] = static function (Finder $finder) use ($list): void {
+        $files = Arr::wrap($files);
+
+        foreach ($files as $key => $list) {
+            if (!$list instanceof Closure) {
+                $files[$key] = static function (Finder $finder) use ($list): void {
                     $finder->in($list)->name('*.php');
                 };
             }
         }
 
-        return $listing;
+        return $files;
     }
 
     /**
      * Creates a new list.
      */
-    public function list(): Listing
+    public function files(): Listing
     {
-        $listing = new Listing(new Collection());
-
-        $listing->exclude = $this->exclude;
-        $listing->append = $this->append;
-
-        return $this->lister->send($listing)->thenReturn();
+        return $this->lister->send(new Listing($this->exclude, $this->include))->thenReturn();
     }
 
     /**
      * Writes a listing to the filesystem.
      */
-    public function generate(?Listing $listing = null): Listing
+    public function save(?Listing $listing = null): Listing
     {
-        return $this->compiler->send($listing)->thenReturn();
-    }
-
-    /**
-     * Return an array of the files from the Finder.
-     *
-     * @param  \Closure(\Symfony\Component\Finder\Finder):void  $callback
-     * @return \Illuminate\Support\Collection<array-key, string>
-     */
-    public function getFilesFromFinder(Closure $callback): Collection
-    {
-        $finder = resolve(Finder::class);
-
-        $callback($finder);
-
-        return Collection::make($finder)->map(static function (SplFileInfo $file): string {
-            return $file->getRealPath();
-        });
+        return $this->compiler->send($listing ?? $this->files())->thenReturn();
     }
 }

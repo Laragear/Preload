@@ -3,12 +3,17 @@
 namespace Tests\Lister;
 
 use ArrayIterator;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Event;
+use Laragear\Preload\Composer;
 use Laragear\Preload\Events\ListGenerated;
 use Laragear\Preload\Exceptions\PreloadException;
 use Laragear\Preload\Facades\Preload;
+use Laragear\Preload\Lister\Pipes\LoadIncludedAndExcludedLibraries;
+use Laragear\Preload\Listing;
 use Laragear\Preload\Opcache;
 use Mockery;
+use Mockery\MockInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Tests\MocksOpcache;
@@ -31,7 +36,7 @@ class ListerTest extends TestCase
             ],
         ]);
 
-        $list = Preload::list();
+        $list = Preload::files();
 
         static::assertSame($memoryUsage, $list->opcache['memory_usage']);
         static::assertSame($opcacheStatistics, $list->opcache['opcache_statistics']);
@@ -41,17 +46,16 @@ class ListerTest extends TestCase
         static::assertTrue($list->projectOnly);
 
         static::assertEmpty($list->exclude);
-        static::assertEmpty($list->append);
+        static::assertEmpty($list->include);
         static::assertSame(0, $list->excludeCount);
-        static::assertSame(0, $list->appendCount);
+        static::assertSame(0, $list->includeCount);
 
         static::assertCount(5, $list->files);
         static::assertFalse($list->files->contains('$PRELOAD$'));
         static::assertFalse($list->files->contains('external/quuz.php'));
         static::assertFalse($list->files->contains('external/foo.php'));
 
-        static::assertEmpty($list->path);
-        static::assertNull($list->output);
+        static::assertTrue($list->statistics->isEmpty());
 
         $event->assertDispatched(
             ListGenerated::class,
@@ -67,7 +71,7 @@ class ListerTest extends TestCase
 
         $this->mockOpcache(['$PRELOAD$' => []]);
 
-        $list = Preload::list();
+        $list = Preload::files();
 
         static::assertCount(3, $list->files);
         static::assertNotContains('$PRELOAD$', $list->files);
@@ -80,7 +84,7 @@ class ListerTest extends TestCase
 
         $this->mockOpcache();
 
-        $list = Preload::list();
+        $list = Preload::files();
 
         static::assertCount(5, $list->files);
         static::assertSame(0, $list->memory);
@@ -92,7 +96,7 @@ class ListerTest extends TestCase
 
         $this->mockOpcache();
 
-        $list = Preload::list();
+        $list = Preload::files();
 
         static::assertContains('external/quuz.php', $list->files);
     }
@@ -113,7 +117,7 @@ class ListerTest extends TestCase
 
         Preload::exclude('test_path');
 
-        $list = Preload::list();
+        $list = Preload::files();
 
         static::assertNotContains(base_path('foo.php'), $list->files);
     }
@@ -136,7 +140,7 @@ class ListerTest extends TestCase
             $finder->in('test_path')->name('*.php');
         });
 
-        $list = Preload::list();
+        $list = Preload::files();
 
         static::assertNotContains(base_path('foo.bar'), $list->files);
     }
@@ -161,7 +165,7 @@ class ListerTest extends TestCase
             $finder->in('external/')->name('*.php');
         });
 
-        $list = Preload::list();
+        $list = Preload::files();
 
         static::assertNotContains('external/quuz.php', $list->files);
     }
@@ -185,7 +189,7 @@ class ListerTest extends TestCase
 
         Preload::exclude('test_path');
 
-        $list = Preload::list();
+        $list = Preload::files();
 
         static::assertNotContains(base_path('foo.php'), $list->files);
         static::assertCount(2, $list->files);
@@ -208,9 +212,9 @@ class ListerTest extends TestCase
 
         $finder->allows('getIterator')->andReturn(new ArrayIterator([$file]));
 
-        Preload::append('test_path');
+        Preload::include('test_path');
 
-        $list = Preload::list();
+        $list = Preload::files();
 
         static::assertSame('append/foo.php', $list->files->last());
         static::assertCount(6, $list->files);
@@ -232,9 +236,9 @@ class ListerTest extends TestCase
 
         $finder->allows('getIterator')->andReturn(new ArrayIterator([$file]));
 
-        Preload::append('test_path');
+        Preload::include('test_path');
 
-        $list = Preload::list();
+        $list = Preload::files();
 
         static::assertCount(4, $list->files);
         static::assertContains(base_path('foo.php'), $list->files);
@@ -257,9 +261,9 @@ class ListerTest extends TestCase
 
         $finder->allows('getIterator')->andReturn(new ArrayIterator([$file]));
 
-        Preload::append('test_path');
+        Preload::include('test_path');
 
-        $list = Preload::list();
+        $list = Preload::files();
 
         static::assertSame(base_path('foo.php'), $list->files->get(2));
         static::assertCount(5, $list->files);
@@ -272,7 +276,7 @@ class ListerTest extends TestCase
 
         $this->mock(Opcache::class)->allows('isDisabled')->andReturnTrue();
 
-        Preload::list();
+        Preload::files();
     }
 
     public function test_exception_list_when_opcache_scripts_empty(): void
@@ -288,6 +292,80 @@ class ListerTest extends TestCase
 
         $opcache->allows('getScripts')->andReturn([]);
 
-        Preload::list();
+        Preload::files();
+    }
+
+    public function test_includes_and_excludes_packages_from_composer(): void
+    {
+        $this->mock(Filesystem::class)
+            ->expects('json')
+            ->with($this->app->basePath('composer.json'))
+            ->andReturn([
+                'extra' => [
+                    'preload' => [
+                        'foo' => true,
+                        'bar' => false,
+                        'baz' => [
+                            'include' => 'src/Include/Baz',
+                            'exclude' => ['src/Exclude/Baz'],
+                        ],
+                    ]
+                ]
+            ]);
+
+        $this->mock(Composer::class, function (MockInterface $mock) {
+            $mock->expects('getLibraryPath')->times(3)->andReturnUsing(function (string $library) {
+                return "/test/path/$library";
+            });
+        });
+
+        $listing = $this->app
+            ->make(LoadIncludedAndExcludedLibraries::class)
+            ->handle(new Listing(), fn($listing) => $listing);
+
+        $finder = Mockery::mock(Finder::class);
+        $finder->expects('files')->andReturnSelf();
+        $finder->expects('in')->with(['/test/path/foo']);
+        ($listing->include[0])($finder);
+
+        $finder = Mockery::mock(Finder::class);
+        $finder->expects('files')->andReturnSelf();
+        $finder->expects('in')->with(['/test/path/bar']);
+        ($listing->exclude[0])($finder);
+
+        $finder = Mockery::mock(Finder::class);
+        $finder->expects('files')->andReturnSelf();
+        $finder->expects('in')->with(['src/Include/Baz']);
+        ($listing->include[1])($finder);
+
+        $finder = Mockery::mock(Finder::class);
+        $finder->expects('files')->andReturnSelf();
+        $finder->expects('in')->with(['src/Exclude/Baz']);
+        ($listing->exclude[1])($finder);
+    }
+
+    public function test_includes_and_excludes_packages_from_composer_throws_if_library_not_installed(): void
+    {
+        $this->mock(Filesystem::class)
+            ->expects('json')
+            ->with($this->app->basePath('composer.json'))
+            ->andReturn([
+                'extra' => [
+                    'preload' => [
+                        'foo' => true,
+                    ]
+                ]
+            ]);
+
+        $this->mock(Composer::class, function (MockInterface $mock) {
+            $mock->expects('getLibraryPath')->with('foo')->andReturnNull();
+        });
+
+        $pipe = $this->app->make(LoadIncludedAndExcludedLibraries::class);
+
+        $this->expectException(PreloadException::class);
+        $this->expectExceptionMessage('The library [foo] is not installed.');
+
+        $pipe->handle(new Listing(), fn($listing) => $listing);
     }
 }
