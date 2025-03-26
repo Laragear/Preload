@@ -17,7 +17,7 @@ class CutListByMemoryLimit
      */
     public function handle(Listing $listing, Closure $next): Listing
     {
-        if ($listing->memory) {
+        if ($listing->memory > 0) {
             $this->cutList($listing);
         }
 
@@ -31,12 +31,10 @@ class CutListByMemoryLimit
     {
         $limit = (int) round($listing->memory * 1024 ** 2);
 
-        $listing->files = $listing->files->takeUntil(
-            static function (array $file) use ($limit, &$memory): bool {
-                $memory += $file['memory_consumption'];
+        $listing->files = $listing->files->takeUntil(static function (array $file) use ($limit, &$memory): bool {
+            $memory += $file['memory_consumption'];
 
-                return $memory > $limit;
-            }
-        );
+            return $memory > $limit;
+        });
     }
 }

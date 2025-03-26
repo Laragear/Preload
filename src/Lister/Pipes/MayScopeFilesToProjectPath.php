@@ -3,6 +3,7 @@
 namespace Laragear\Preload\Lister\Pipes;
 
 use Closure;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Str;
 use Laragear\Preload\Listing;
@@ -22,7 +23,7 @@ class MayScopeFilesToProjectPath
     /**
      * Create a new pipe instance.
      */
-    public function __construct(Application $app)
+    public function __construct(Application $app, protected Repository $config)
     {
         $this->basePath = $app->basePath();
     }
@@ -32,7 +33,7 @@ class MayScopeFilesToProjectPath
      */
     public function handle(Listing $listing, Closure $next): Listing
     {
-        if ($listing->projectOnly) {
+        if ($this->config->get('preload.project_only')) {
             $this->removeNonProjectFiles($listing);
         }
 

@@ -54,6 +54,8 @@ class Opcache
 
     /**
      * Returns the scripts used by Opcache.
+     *
+     * @return array<string, array{hits: int, memory_consumption: int, last_used_timestamp: int}>
      */
     public function getScripts(): array
     {
@@ -62,6 +64,8 @@ class Opcache
 
     /**
      * Returns the memory usage of Opcache.
+     *
+     * @return array{used_memory: int, free_memory: int, wasted_memory: int}
      */
     public function getMemoryUsage(): array
     {
@@ -70,6 +74,8 @@ class Opcache
 
     /**
      * Return statistics of Opcache.
+     *
+     * @return array{num_cached_scripts: int, opcache_hit_rate: float, misses: int}
      */
     public function getStatistics(): array
     {
@@ -86,6 +92,8 @@ class Opcache
 
     /**
      * Check if Opcache has any cached script.
+     *
+     * @TODO Delete if unused
      */
     public function cachedScriptsFilled(): bool
     {
@@ -94,6 +102,8 @@ class Opcache
 
     /**
      * Check if Opcache has no cached scripts.
+     *
+     * @TODO Delete if unused
      */
     public function cachedScriptsEmpty(): bool
     {
@@ -102,6 +112,8 @@ class Opcache
 
     /**
      * Returns the number of hits in Opcache.
+     *
+     * @TODO Delete if unused
      */
     public function getHits(): int
     {

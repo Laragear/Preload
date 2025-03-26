@@ -6,10 +6,12 @@ use Closure;
 use Illuminate\Contracts\Foundation\Application;
 use Laragear\Preload\Listing;
 
+use function max;
+
 /**
  * @internal
  */
-class MayExcludeExternalFiles
+class MayIncludeFiles
 {
     use Concerns\RetrievesFilesFromFinder;
 
@@ -28,15 +30,16 @@ class MayExcludeExternalFiles
      */
     public function handle(Listing $listing, Closure $next): Listing
     {
-        foreach ($listing->exclude as $key => $exclude) {
-            $excluded = $this->getFilesFromFinder($exclude)->flip();
+        $count = $listing->files->count();
 
-            $listing->excludeCount += $excluded->count();
-
-            $listing->files = $listing->files->diffKeys($excluded);
-
-            unset($listing->exclude[$key]);
+        foreach ($listing->include as $key => $include) {
+            $listing->files = $listing->files->merge($this->getFilesFromFinder($include)->values());
+            unset($listing->include[$key]);
         }
+
+        $listing->files = $listing->files->unique();
+
+        $listing->includeCount = max(0, $listing->files->count() - $count);
 
         return $next($listing);
     }

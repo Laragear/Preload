@@ -27,7 +27,7 @@ class LoadOpcacheConfig
     public function handle(Listing $listing, Closure $next): Listing
     {
         if ($this->opcache->isDisabled()) {
-            throw new PreloadException('Opcache is disabled.');
+            throw new PreloadException("Cannot gather Opcache data because it's disabled.");
         }
 
         $listing->opcache['memory_usage'] = Arr::only(

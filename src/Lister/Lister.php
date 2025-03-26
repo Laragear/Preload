@@ -21,11 +21,11 @@ class Lister extends Pipeline
         Pipes\LoadIncludedAndExcludedLibraries::class,
         Pipes\ExcludePreloadVariable::class,
         Pipes\MayScopeFilesToProjectPath::class,
-        Pipes\MayExcludeExternalFiles::class,
+        Pipes\MayExcludeFiles::class,
         Pipes\SortScriptsByHitRatio::class,
         Pipes\CutListByMemoryLimit::class,
         Pipes\NormalizeList::class,
-        Pipes\MayAppendExternalFiles::class,
+        Pipes\MayIncludeFiles::class,
         Pipes\FireEvent::class,
     ];
 }

@@ -19,7 +19,6 @@ class Listing
         public array $exclude = [],
         public array $include = [],
         public Collection $files = new Collection,
-        public bool $projectOnly = true,
         public int $excludeCount = 0,
         public int $includeCount = 0,
         public int $memory = 0,

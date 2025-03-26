@@ -24,7 +24,7 @@ trait RetrievesFilesFromFinder
         $callback($finder);
 
         return Collection::make($finder)->map(static function (SplFileInfo $file): string {
-            return $file->getRealPath();
+            return $file->getRealPath() ?: $file->getPath();
         });
     }
 }
