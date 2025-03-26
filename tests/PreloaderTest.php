@@ -112,7 +112,7 @@ class PreloaderTest extends TestCase
         $closure = null;
 
         $this->mock(Lister::class, static function (Mockery\MockInterface $mock) use (&$closure) {
-            $mock->expects('send')->once()->withArgs(static function (Listing $listing)  use (&$closure) {
+            $mock->expects('send')->once()->withArgs(static function (Listing $listing) use (&$closure) {
                 static::assertCount(1, $listing->include);
                 static::assertInstanceOf(Closure::class, $listing->include[0]);
 
