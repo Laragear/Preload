@@ -34,7 +34,7 @@ PHP
 
     public function test_doesnt_overwrite_same_placeholder(): void
     {
-        $this->mock(Filesystem::class, function (MockInterface $mock)  {
+        $this->mock(Filesystem::class, function (MockInterface $mock) {
             $mock->expects('exists')->andReturnTrue();
             $mock->expects('put')->never();
         });

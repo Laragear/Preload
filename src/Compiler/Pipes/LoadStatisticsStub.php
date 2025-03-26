@@ -5,7 +5,6 @@ namespace Laragear\Preload\Compiler\Pipes;
 use Closure;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Stringable;
 use Laragear\Preload\Exceptions\PreloadException;
 use Laragear\Preload\Listing;
 use Laragear\Preload\Preloader;

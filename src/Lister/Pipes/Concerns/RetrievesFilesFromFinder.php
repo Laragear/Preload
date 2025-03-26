@@ -14,6 +14,7 @@ trait RetrievesFilesFromFinder
      *
      * @param  \Closure(\Symfony\Component\Finder\Finder):void  $callback
      * @return \Illuminate\Support\Collection<array-key, string>
+     *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function getFilesFromFinder(Closure $callback): Collection

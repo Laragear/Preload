@@ -2,17 +2,12 @@
 
 namespace Tests;
 
-use ArrayIterator;
 use Closure;
-use Illuminate\Support\Collection;
 use Laragear\Preload\Compiler\Compiler;
-use Laragear\Preload\Facades\Preload;
 use Laragear\Preload\Lister\Lister;
 use Laragear\Preload\Listing;
 use Laragear\Preload\Preloader;
 use Mockery;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 
 class PreloaderTest extends TestCase
 {

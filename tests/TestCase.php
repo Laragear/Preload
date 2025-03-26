@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Illuminate\Contracts\Foundation\Application;
 use Laragear\Preload\Facades\Preload;
 use Laragear\Preload\PreloadServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;

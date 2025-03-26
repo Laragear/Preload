@@ -3,9 +3,7 @@
 namespace Tests\Jobs;
 
 use Illuminate\Queue\Middleware\WithoutOverlapping;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Bus;
-use Laragear\Preload\Facades\Preload;
 use Laragear\Preload\Jobs\StorePreloadScript;
 use Laragear\Preload\Listing;
 use Laragear\Preload\Preloader;
@@ -25,7 +23,7 @@ class StorePreloadScriptTest extends TestCase
 
         $listing = new Listing();
 
-        $this->mock(Preloader::class, function (MockInterface $mock) use ($bus, $listing) {
+        $this->mock(Preloader::class, function (MockInterface $mock) use ($listing) {
             $mock->expects('save')->with($listing)->andReturn($listing);
         });
 

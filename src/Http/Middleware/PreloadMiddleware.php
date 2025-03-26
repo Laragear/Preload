@@ -8,6 +8,7 @@ use Laragear\Preload\Condition;
 use Laragear\Preload\Jobs\StorePreloadScript;
 use Laragear\Preload\Preloader;
 use Symfony\Component\HttpFoundation\Response;
+
 use function app;
 
 /**
@@ -34,7 +35,7 @@ class PreloadMiddleware
             [
                 'preload.job.connection' => $connection,
                 'preload.job.queue' => $queue,
-            ] = $app->make('config')->getMany(['preload.job.connection', 'preload.job.queue',]);
+            ] = $app->make('config')->getMany(['preload.job.connection', 'preload.job.queue']);
 
             StorePreloadScript::dispatch($app->make(Preloader::class)->list())
                 ->onConnection($connection)

@@ -309,8 +309,8 @@ class ListerTest extends TestCase
                             'include' => 'src/Include/Baz',
                             'exclude' => ['src/Exclude/Baz'],
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ]);
 
         $this->mock(Composer::class, function (MockInterface $mock) {
@@ -321,7 +321,7 @@ class ListerTest extends TestCase
 
         $listing = $this->app
             ->make(LoadIncludedAndExcludedLibraries::class)
-            ->handle(new Listing(), fn($listing) => $listing);
+            ->handle(new Listing(), fn ($listing) => $listing);
 
         $finder = Mockery::mock(Finder::class);
         $finder->expects('files')->andReturnSelf();
@@ -353,8 +353,8 @@ class ListerTest extends TestCase
                 'extra' => [
                     'preload' => [
                         'foo' => true,
-                    ]
-                ]
+                    ],
+                ],
             ]);
 
         $this->mock(Composer::class, function (MockInterface $mock) {
@@ -366,6 +366,6 @@ class ListerTest extends TestCase
         $this->expectException(PreloadException::class);
         $this->expectExceptionMessage('The library [foo] is not installed.');
 
-        $pipe->handle(new Listing(), fn($listing) => $listing);
+        $pipe->handle(new Listing(), fn ($listing) => $listing);
     }
 }

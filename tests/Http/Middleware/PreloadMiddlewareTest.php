@@ -8,6 +8,7 @@ use Laragear\Preload\Jobs\StorePreloadScript;
 use Laragear\Preload\Listing;
 use Laragear\Preload\Preloader;
 use Tests\TestCase;
+
 use function abort;
 
 class PreloadMiddlewareTest extends TestCase
@@ -40,7 +41,7 @@ class PreloadMiddlewareTest extends TestCase
         $this->mock(Preloader::class)->expects('list')->once()->andReturn($listing = new Listing());
 
         $this->app->afterResolving(Condition::class, static function (Condition $condition) {
-            $condition->use(fn() => true);
+            $condition->use(fn () => true);
         });
 
         $this->get('test')->assertOk();

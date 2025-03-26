@@ -5,12 +5,7 @@ namespace Laragear\Preload;
 use Closure;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
-
-use function is_string;
-use function resolve;
 
 class Preloader
 {
@@ -19,7 +14,7 @@ class Preloader
      *
      * @const string
      */
-    public const STUB_STATISTICS = __DIR__ . '/../stubs/statistics.md';
+    public const STUB_STATISTICS = __DIR__.'/../stubs/statistics.md';
 
     /**
      * The location of the preload script stub.
@@ -95,7 +90,7 @@ class Preloader
         $files = Arr::wrap($files);
 
         foreach ($files as $key => $list) {
-            if (!$list instanceof Closure) {
+            if (! $list instanceof Closure) {
                 $files[$key] = static function (Finder $finder) use ($list): void {
                     $finder->in($list)->name('*.php');
                 };

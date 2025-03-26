@@ -8,9 +8,8 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Laragear\Preload\Exceptions\PreloadException;
 use Laragear\Preload\Listing;
-
 use Laragear\Preload\Preloader;
-use function implode;
+
 use const DIRECTORY_SEPARATOR;
 use const PHP_EOL;
 
@@ -32,11 +31,11 @@ class WriteListFile
      */
     public function handle(Listing $listing, Closure $next): Listing
     {
-        $path = $this->config->get('preload.path').DIRECTORY_SEPARATOR. Preloader::NAME_LIST;
+        $path = $this->config->get('preload.path').DIRECTORY_SEPARATOR.Preloader::NAME_LIST;
 
         /** @var \Illuminate\Support\Collection<int, string> $files */
         foreach ($listing->files->chunk(500) as $files) {
-            if (!$this->files->put($path, $files->implode(PHP_EOL).PHP_EOL, true)) {
+            if (! $this->files->put($path, $files->implode(PHP_EOL).PHP_EOL, true)) {
                 throw new PreloadException("Couldn't write list file to [$path].");
             }
         }

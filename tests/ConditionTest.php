@@ -2,13 +2,8 @@
 
 namespace Tests;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Fluent;
 use Laragear\Preload\Condition;
-use Laragear\Preload\Facades\Preload;
-use Laragear\Preload\Opcache;
 
 class ConditionTest extends TestCase
 {

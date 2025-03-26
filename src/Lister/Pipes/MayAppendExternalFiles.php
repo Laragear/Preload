@@ -4,12 +4,8 @@ namespace Laragear\Preload\Lister\Pipes;
 
 use Closure;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Support\Collection;
 use Laragear\Preload\Listing;
-use Laragear\Preload\Preloader;
 
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 use function max;
 
 /**
@@ -47,5 +43,4 @@ class MayAppendExternalFiles
 
         return $next($listing);
     }
-
 }
