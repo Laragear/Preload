@@ -16,8 +16,8 @@ use Laragear\Preload\Lister\Pipes\FireEvent;
 use Laragear\Preload\Lister\Pipes\LoadAcceleratedFiles;
 use Laragear\Preload\Lister\Pipes\LoadIncludedAndExcludedLibraries;
 use Laragear\Preload\Lister\Pipes\LoadOpcacheConfig;
-use Laragear\Preload\Lister\Pipes\MayIncludeFiles;
 use Laragear\Preload\Lister\Pipes\MayExcludeFiles;
+use Laragear\Preload\Lister\Pipes\MayIncludeFiles;
 use Laragear\Preload\Lister\Pipes\MayScopeFilesToProjectPath;
 use Laragear\Preload\Lister\Pipes\NormalizeList;
 use Laragear\Preload\Lister\Pipes\SortScriptsByHitRatio;
@@ -220,7 +220,7 @@ class ListerTest extends TestCase
 
         $listing = new Listing(files: new Collection([
             $this->app->basePath('/foo.php') => ['test'],
-            '/bar.php' => ['test']
+            '/bar.php' => ['test'],
         ]));
 
         $this->app->make(MayScopeFilesToProjectPath::class)->handle($listing, fn ($value) => $value);
@@ -231,7 +231,7 @@ class ListerTest extends TestCase
 
         $listing = new Listing(files: new Collection($allFiles = [
             $this->app->basePath('/foo.php') => ['test'],
-            '/bar.php' => ['test']
+            '/bar.php' => ['test'],
         ]));
 
         $this->app->make(MayScopeFilesToProjectPath::class)->handle($listing, fn ($value) => $value);
@@ -254,7 +254,7 @@ class ListerTest extends TestCase
         });
 
         $listing = new Listing(
-            exclude: [fn(Finder $finder) => $finder->in('foo')->name('*.php')],
+            exclude: [fn (Finder $finder) => $finder->in('foo')->name('*.php')],
             files: new Collection(['foo.php' => [], 'bar.php' => []])
         );
 
@@ -331,8 +331,8 @@ class ListerTest extends TestCase
 
         $listing = new Listing(
             include: [
-                fn(Finder $finder) => $finder->in('foo')->name('*.php'),
-                fn(Finder $finder) => $finder->in('foo')->name('*.php')
+                fn (Finder $finder) => $finder->in('foo')->name('*.php'),
+                fn (Finder $finder) => $finder->in('foo')->name('*.php'),
             ],
             files: new Collection(['bar.php'])
         );
