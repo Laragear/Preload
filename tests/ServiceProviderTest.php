@@ -10,6 +10,7 @@ use Laragear\Preload\Condition;
 use Laragear\Preload\Http\Middleware\PreloadMiddleware;
 use Laragear\Preload\Preloader;
 use Laragear\Preload\PreloadServiceProvider;
+
 use function get_class;
 use function method_exists;
 
@@ -55,8 +56,8 @@ class ServiceProviderTest extends TestCase
     {
         $http = $this->app->make(Kernel::class);
 
-        if (!method_exists($http, 'pushMiddleware')) {
-            $this->markTestSkipped('The ' . get_class($http) . ' does not have a pushMiddleware() method to test.');
+        if (! method_exists($http, 'pushMiddleware')) {
+            $this->markTestSkipped('The '.get_class($http).' does not have a pushMiddleware() method to test.');
         }
 
         static::assertTrue($http->hasMiddleware(PreloadMiddleware::class));
@@ -74,8 +75,8 @@ class ServiceProviderTest extends TestCase
     {
         $http = $this->app->make(Kernel::class);
 
-        if (!method_exists($http, 'pushMiddleware')) {
-            $this->markTestSkipped('The ' . get_class($http) . ' does not have a pushMiddleware() method to test.');
+        if (! method_exists($http, 'pushMiddleware')) {
+            $this->markTestSkipped('The '.get_class($http).' does not have a pushMiddleware() method to test.');
         }
 
         static::assertTrue($http->hasMiddleware(PreloadMiddleware::class));
