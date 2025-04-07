@@ -12,7 +12,7 @@ class StubTest extends TestCase
     public function test_stores_placeholder_in_output_path(): void
     {
         $dir = $this->app->basePath();
-        $filePath = $dir . '/' . Preloader::NAME_PRELOAD;
+        $filePath = $dir.'/'.Preloader::NAME_PRELOAD;
 
         $this->mock(Filesystem::class, function (MockInterface $mock) use ($dir, $filePath) {
             $mock->expects('ensureDirectoryExists')->with($dir);

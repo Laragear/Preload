@@ -7,7 +7,6 @@ use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Filesystem\Filesystem;
 use Laragear\Preload\Preloader;
 use Symfony\Component\Console\Attribute\AsCommand;
-use const DIRECTORY_SEPARATOR;
 
 /**
  * @internal
@@ -42,7 +41,7 @@ class Stub extends Command
     public function handle(Filesystem $file, ConfigContract $config): void
     {
         $dir = $config->get('preload.path');
-        $filePath = $dir . '/' . Preloader::NAME_PRELOAD;
+        $filePath = $dir.'/'.Preloader::NAME_PRELOAD;
 
         $file->ensureDirectoryExists($dir);
 

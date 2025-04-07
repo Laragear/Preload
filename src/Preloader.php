@@ -28,12 +28,12 @@ class Preloader
      *
      * @const string
      */
-    public const STUB_STATISTICS = __DIR__.'/../stubs/' . self::NAME_STATISTICS;
+    public const STUB_STATISTICS = __DIR__.'/../stubs/'.self::NAME_STATISTICS;
 
     /**
      * The location of the preload script stub.
      */
-    public const STUB_PRELOAD = __DIR__.'/../stubs/' .  self::NAME_PRELOAD . '.stub';
+    public const STUB_PRELOAD = __DIR__.'/../stubs/'.self::NAME_PRELOAD.'.stub';
 
     /**
      * The filename of the list of preload files.
