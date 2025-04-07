@@ -10,8 +10,8 @@ use Laragear\Preload\Condition;
 use Laragear\Preload\Http\Middleware\PreloadMiddleware;
 use Laragear\Preload\Preloader;
 use Laragear\Preload\PreloadServiceProvider;
-
 use Orchestra\Testbench\Attributes\DefineEnvironment;
+
 use function get_class;
 use function method_exists;
 
