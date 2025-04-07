@@ -10,6 +10,10 @@ use Laragear\Preload\Condition;
 use Laragear\Preload\Http\Middleware\PreloadMiddleware;
 use Laragear\Preload\Preloader;
 use Laragear\Preload\PreloadServiceProvider;
+use Orchestra\Testbench\Attributes\DefineEnvironment;
+
+use function get_class;
+use function method_exists;
 
 class ServiceProviderTest extends TestCase
 {
@@ -46,14 +50,16 @@ class ServiceProviderTest extends TestCase
         $app['env'] = 'production';
     }
 
-    /**
-     * @define-env usesProductionEnvironment
-     */
+    #[DefineEnvironment('usesProductionEnvironment')]
     public function test_registers_global_middleware_on_production(): void
     {
-        static::assertTrue(
-            $this->app->make(Kernel::class)->hasMiddleware(PreloadMiddleware::class)
-        );
+        $http = $this->app->make(Kernel::class);
+
+        if (! method_exists($http, 'pushMiddleware')) {
+            $this->markTestSkipped('The '.get_class($http).' does not have a pushMiddleware() method to test.');
+        }
+
+        static::assertTrue($http->hasMiddleware(PreloadMiddleware::class));
     }
 
     protected function setConfigEnableTrue(Application $app): void
@@ -61,14 +67,16 @@ class ServiceProviderTest extends TestCase
         $app->make('config')->set('preload.enabled', true);
     }
 
-    /**
-     * @define-env setConfigEnableTrue
-     */
+    #[DefineEnvironment('setConfigEnableTrue')]
     public function test_registers_global_middleware_when_config_is_true(): void
     {
-        static::assertTrue(
-            app(Kernel::class)->hasMiddleware(PreloadMiddleware::class)
-        );
+        $http = $this->app->make(Kernel::class);
+
+        if (! method_exists($http, 'pushMiddleware')) {
+            $this->markTestSkipped('The '.get_class($http).' does not have a pushMiddleware() method to test.');
+        }
+
+        static::assertTrue($http->hasMiddleware(PreloadMiddleware::class));
     }
 
     public function test_registers_command(): void

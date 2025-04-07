@@ -10,18 +10,6 @@ use Symfony\Component\Finder\Finder;
 class Preloader
 {
     /**
-     * The location of the statistic file.
-     *
-     * @const string
-     */
-    public const STUB_STATISTICS = __DIR__.'/../stubs/statistics.md';
-
-    /**
-     * The location of the preload script stub.
-     */
-    public const STUB_PRELOAD = __DIR__.'/../stubs/preload.php.stub';
-
-    /**
      * The filename for the statistics file.
      *
      * @const string
@@ -34,6 +22,18 @@ class Preloader
      * @const string
      */
     public const NAME_PRELOAD = 'preload.php';
+
+    /**
+     * The location of the statistic file.
+     *
+     * @const string
+     */
+    public const STUB_STATISTICS = __DIR__.'/../stubs/'.self::NAME_STATISTICS;
+
+    /**
+     * The location of the preload script stub.
+     */
+    public const STUB_PRELOAD = __DIR__.'/../stubs/'.self::NAME_PRELOAD.'.stub';
 
     /**
      * The filename of the list of preload files.

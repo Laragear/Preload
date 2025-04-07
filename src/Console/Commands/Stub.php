@@ -5,6 +5,7 @@ namespace Laragear\Preload\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Filesystem\Filesystem;
+use Laragear\Preload\Preloader;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 /**
@@ -39,25 +40,30 @@ class Stub extends Command
      */
     public function handle(Filesystem $file, ConfigContract $config): void
     {
-        $path = $config->get('preload.path');
+        $dir = $config->get('preload.path');
+        $filePath = $dir.'/'.Preloader::NAME_PRELOAD;
 
-        if ($file->exists($path)) {
+        $file->ensureDirectoryExists($dir);
+
+        if ($file->exists($filePath)) {
             $this->info('A preload script file already exists.');
 
             return;
         }
 
-        $file->put($path, <<<'STUB'
+        $file->put($filePath, <<<'STUB'
 <?php
 
-\fwrite(\STDOUT, 'Info: This is a stub file to be replaced for the application at runtime.');
+$date = (new DateTime())->format('d-m-Y H:i:s');
+
+echo "[$date] Info: This is a preload stub file to be replaced for the application at runtime.";
 
 STUB
         );
 
-        $this->info("Stub copied at [$path].");
+        $this->info("Stub copied at [$filePath].");
         $this->newLine();
         $this->comment('Remember to edit your [php.ini] file:');
-        $this->comment("opcache.preload = $path");
+        $this->comment("opcache.preload = $filePath");
     }
 }
