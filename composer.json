@@ -24,17 +24,17 @@
         "php": "^8.2",
         "ext-json": "*",
         "symfony/finder": "7.*",
-        "illuminate/config": "11.*|12.*",
-        "illuminate/console": "11.*|12.*",
-        "illuminate/contracts": "11.*|12.*",
-        "illuminate/events": "11.*|12.*",
-        "illuminate/http": "11.*|12.*",
-        "illuminate/pipeline": "11.*|12.*",
-        "illuminate/queue": "11.*|12.*",
-        "illuminate/support": "11.*|12.*"
+        "illuminate/config": "11.*|12.*|^13.0",
+        "illuminate/console": "11.*|12.*|^13.0",
+        "illuminate/contracts": "11.*|12.*|^13.0",
+        "illuminate/events": "11.*|12.*|^13.0",
+        "illuminate/http": "11.*|12.*|^13.0",
+        "illuminate/pipeline": "11.*|12.*|^13.0",
+        "illuminate/queue": "11.*|12.*|^13.0",
+        "illuminate/support": "11.*|12.*|^13.0"
     },
     "require-dev": {
-        "orchestra/testbench": "9.*|10.*"
+        "orchestra/testbench": "9.*|10.*|^11.0"
     },
     "autoload": {
         "psr-4": {
