@@ -21,7 +21,7 @@ class StorePreloadScript implements ShouldQueue, ShouldBeUnique, ShouldBeUniqueU
     /**
      * Name of the overlap key to handle job uniqueness.
      */
-    public const OVERLAP_KEY = 'write_preload_script';
+    public const string OVERLAP_KEY = 'write_preload_script';
 
     /**
      * Create a new job instance.

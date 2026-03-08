@@ -1,7 +1,7 @@
 # Preload
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/laragear/preload.svg)](https://packagist.org/packages/laragear/preload)
 [![Latest stable test run](https://github.com/Laragear/Preload/workflows/Tests/badge.svg)](https://github.com/Laragear/Preload/actions)
-[![Codecov coverage](https://codecov.io/gh/Laragear/Preload/branch/1.x/graph/badge.svg?token=DPGO1BDJCJ)](https://codecov.io/gh/Laragear/Preload)
+[![Codecov coverage](https://codecov.io/gh/Laragear/Preload/graph/badge.svg?token=DPGO1BDJCJ)](https://codecov.io/gh/Laragear/Preload)
 [![Maintainability](https://qlty.sh/badges/9009a472-5951-4c48-875f-54c9a991692a/maintainability.svg)](https://qlty.sh/gh/Laragear/projects/Preload)
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Laragear_Preload&metric=alert_status)](https://sonarcloud.io/dashboard?id=Laragear_Preload)
 [![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/9.x/octane#introduction)
@@ -18,7 +18,8 @@ Your support allows me to keep this package free, up-to-date and maintainable. A
 
 ## Requirements
 
-* Laravel 11 or later
+* PHP 8.3 or later
+* Laravel 12 or later
 * [Opcache & Preloading enabled](https://www.php.net/manual/en/book.opcache.php) (`ext-opcache`).
 
 ## Installation
@@ -37,9 +38,9 @@ composer require laragear/preload
 
 PHP interpreter needs to read and compile each requested file in your project. When Opcache is enabled, it will keep interpreted files in memory instead of reading them again from the file system, which is miles faster.
 
-Opcache's Preloading allows to store in memory a given list of files when the PHP process starts, before normal execution. This makes the application _faster_ for first requests, as these files to read are already in memory. With [JIT](https://www.php.net/manual/en/opcache.configuration.php#ini.opcache.jit), these files are also compiled into byte-code, saving another step.
+Opcache's Preloading allows storing in memory a given list of files when the PHP process starts, before normal execution. This makes the application _faster_ for first requests, as these files to read are already in memory. With [JIT](https://www.php.net/manual/en/opcache.configuration.php#ini.opcache.jit), these files are also compiled into byte-code, saving another step.
 
-This package generates a file with a list of the most accessed files of your application, and a script that will load these files on startup. You can point the "loader" script into your `php.ini`:
+This package generates a file with a list containing the most accessed files of your application and a script that will load these files on startup. You can point the "loader" script into your `php.ini`:
 
 ```ini
 opcache.preload_user = 'www-data'
@@ -54,9 +55,9 @@ After that, the next time PHP starts, this list of files will be preloaded autom
 
 ## Usage
 
-By default, this package pushes a queued job data each 10,000 requests, containing a limited list of the most accessed files of the application. [This condition can be changed](#custom-condition).
+By default, this package pushes a queued job each 10,000 requests, containing a limited list with the most accessed files of the application. [This condition can be changed](#custom-condition).
 
-First, you should publish the stub script with the `preload:stub` Artisan command. By default, it will copy a stub preloader into application root directory [by default](#paths).
+First, you should publish the stub script with the `preload:stub` Artisan command. By default, it will copy a stub preloader into the application root directory [by default](#paths).
 
 ```bash
 php artisan preload:stub
@@ -384,10 +385,10 @@ Aside from that, the (real) condition callback is always executed each Request u
 
 ## Security
 
-If you discover any security related issues, please [use the online form](https://github.com/Laragear/Preload/security).
+If you discover any security-related issues, please [use the online form](https://github.com/Laragear/Preload/security).
 
 # License
 
-This specific package version is licensed under the terms of the [MIT License](LICENSE.md), at time of publishing.
+This specific package version is licensed under the terms of the [MIT License](LICENSE.md), at the time of publishing.
 
-[Laravel](https://laravel.com) is a Trademark of [Taylor Otwell](https://github.com/TaylorOtwell/). Copyright © 2011-2023 Laravel LLC.
+[Laravel](https://laravel.com) is a Trademark of [Taylor Otwell](https://github.com/TaylorOtwell/). Copyright © 2011–2026 Laravel LLC.

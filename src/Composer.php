@@ -16,7 +16,7 @@ use function realpath;
 class Composer
 {
     /**
-     * Returns the where the installation path of the library if its installed.
+     * Returns where the installation path of the library if it's installed.
      */
     public function getLibraryPath(string $library): ?string
     {

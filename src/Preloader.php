@@ -14,33 +14,33 @@ class Preloader
      *
      * @const string
      */
-    public const NAME_STATISTICS = 'statistics.md';
+    public const string NAME_STATISTICS = 'statistics.md';
 
     /**
      * The filename for the preload script file.
      *
      * @const string
      */
-    public const NAME_PRELOAD = 'preload.php';
+    public const string NAME_PRELOAD = 'preload.php';
 
     /**
      * The location of the statistic file.
      *
      * @const string
      */
-    public const STUB_STATISTICS = __DIR__.'/../stubs/'.self::NAME_STATISTICS;
+    public const string STUB_STATISTICS = __DIR__.'/../stubs/'.self::NAME_STATISTICS;
 
     /**
      * The location of the preload script stub.
      */
-    public const STUB_PRELOAD = __DIR__.'/../stubs/'.self::NAME_PRELOAD.'.stub';
+    public const string STUB_PRELOAD = __DIR__.'/../stubs/'.self::NAME_PRELOAD.'.stub';
 
     /**
      * The filename of the list of preload files.
      *
      * @const string
      */
-    public const NAME_LIST = 'list.txt';
+    public const string NAME_LIST = 'list.txt';
 
     /**
      * Create a new Preload instance.
@@ -82,7 +82,7 @@ class Preloader
     /**
      * Normalize the listing from the user.
      *
-     * @param  (\Closure(\Symfony\Component\Finder\Finder):void)|string|string[]  $files
+     * @param  (\Closure(\Symfony\Component\Finder\Finder):void)|(\Closure(\Symfony\Component\Finder\Finder):void)[]|string|string[]  $files
      * @return (\Closure(\Symfony\Component\Finder\Finder):void)[]
      */
     protected function normalizeListing(Closure|string|array $files): array

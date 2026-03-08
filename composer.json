@@ -21,20 +21,20 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "ext-json": "*",
-        "symfony/finder": "7.*",
-        "illuminate/config": "11.*|12.*",
-        "illuminate/console": "11.*|12.*",
-        "illuminate/contracts": "11.*|12.*",
-        "illuminate/events": "11.*|12.*",
-        "illuminate/http": "11.*|12.*",
-        "illuminate/pipeline": "11.*|12.*",
-        "illuminate/queue": "11.*|12.*",
-        "illuminate/support": "11.*|12.*"
+        "symfony/finder": "7.*|8.*",
+        "illuminate/config": "12.*|13.*",
+        "illuminate/console": "12.*|13.*",
+        "illuminate/contracts": "12.*|13.*",
+        "illuminate/events": "12.*|13.*",
+        "illuminate/http": "12.*|13.*",
+        "illuminate/pipeline": "12.*|13.*",
+        "illuminate/queue": "12.*|13.*",
+        "illuminate/support": "12.*|13.*"
     },
     "require-dev": {
-        "orchestra/testbench": "9.*|10.*"
+        "orchestra/testbench": "10.*|11.*"
     },
     "autoload": {
         "psr-4": {

@@ -14,7 +14,7 @@ class PreloadServiceProvider extends ServiceProvider
     /**
      * Location of the package config.
      */
-    public const CONFIG = __DIR__.'/../config/preload.php';
+    public const string CONFIG = __DIR__.'/../config/preload.php';
 
     /**
      * Register the application services.
@@ -53,7 +53,7 @@ class PreloadServiceProvider extends ServiceProvider
      */
     protected function shouldRun(ConfigContract $config): bool
     {
-        // If it's null run only on production, otherwise the developer decides.
+        // If it's null, run only on production, otherwise the developer decides.
         return $config->get('preload.enabled') ?? $this->app->environment('production');
     }
 }
